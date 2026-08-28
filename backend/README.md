@@ -49,8 +49,8 @@ The API listens on http://localhost:3000.
 | `PORT` | `3000` | HTTP port |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:3001` | Comma-separated allow list, also applied to the websocket namespace. Startup fails if unset |
 | `DATABASE_HOST` | `localhost` | `postgres_db` inside the Docker network |
-| `DATABASE_PORT` | `5432` | |
-| `DATABASE_PORT_TEST` | `5433` | Port of the `test_db` service, used by the e2e tests |
+| `DATABASE_PORT` | `5432` | Host port of the `postgres_db` service. Change it here **and** in the root `.env` if 5432 is already taken on your machine — the compose files read the same variable |
+| `DATABASE_PORT_TEST` | `5433` | Host port of the `test_db` service, used by the e2e tests |
 | `DATABASE_NAME` | `announcements` | |
 | `DATABASE_NAME_TEST` | `announcements_test` | |
 | `DATABASE_USER` | `admin` | |

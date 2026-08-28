@@ -56,7 +56,6 @@ export class AnnouncementRepository extends Repository<AnnouncementEntity> {
     queryBuilder
       .orderBy(ANNOUNCEMENT_SORT_COLUMNS[args.sortBy], args.sortOrder)
       .addOrderBy('announcement.id', args.sortOrder)
-      .addOrderBy('category.orderingNumber', 'ASC')
       .skip((args.page - 1) * args.limit)
       .take(args.limit);
 
@@ -69,7 +68,6 @@ export class AnnouncementRepository extends Repository<AnnouncementEntity> {
     return this.findOne({
       where: { id: announcementId },
       relations: { categories: true },
-      order: { categories: { orderingNumber: 'ASC' } },
     });
   }
 
@@ -83,7 +81,6 @@ export class AnnouncementRepository extends Repository<AnnouncementEntity> {
     return announcementRepository.findOne({
       where: { id: announcementId },
       relations: { categories: true },
-      order: { categories: { orderingNumber: 'ASC' } },
     });
   }
 }

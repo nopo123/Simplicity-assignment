@@ -10,7 +10,9 @@ export const mapAnnouncementEntityToDto = (
   title: announcement.title,
   body: announcement.body,
   publicationDate: dayjs(announcement.publicationDate).toISOString(),
-  categories: announcement.categories.map(mapCategoryEntityToDto),
+  categories: [...announcement.categories]
+    .sort((first, second) => first.orderingNumber - second.orderingNumber)
+    .map(mapCategoryEntityToDto),
   created: dayjs(announcement.created).toISOString(),
   updated: dayjs(announcement.updated).toISOString(),
 });

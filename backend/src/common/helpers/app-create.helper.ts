@@ -17,7 +17,7 @@ export const validationPipelinesHelper = (app: NestExpressApplication) => {
       transform: true,
       forbidNonWhitelisted: true,
       validationError: { target: false, value: false },
-      stopAtFirstError: true,
+      stopAtFirstError: false,
       errorHttpStatusCode: 400,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         throw new BadRequestException(
