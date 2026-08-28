@@ -20,8 +20,7 @@
     },
     "filters": {
       "searchPlaceholder": "Search title or content",
-      "category": "Category",
-      "categoryPlaceholder": "All categories"
+      "category": "Category"
     },
     "form": {
       "createTitle": "Create the announcement",
@@ -30,10 +29,8 @@
       "body": "Content",
       "category": "Category",
       "categoryHint": "Select category so readers know what your announcement is about",
-      "categoryLabel": "Categories",
       "categoryPlaceholder": "Select categories",
       "publicationDate": "Publication date",
-      "publicationDateLabel": "Publication date",
       "publish": "Publish",
       "created": "Announcement has been created",
       "updated": "Announcement has been updated",

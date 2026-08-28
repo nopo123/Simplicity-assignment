@@ -125,7 +125,7 @@ const AnnouncementForm = ({
 
       <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
         <Box>
-          <Typography variant="subtitle1">
+          <Typography variant="subtitle2">
             {t("announcements.form.category")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -134,7 +134,7 @@ const AnnouncementForm = ({
         </Box>
         <MultiAutocomplete
           name="categoryIds"
-          label={t("announcements.form.categoryLabel")}
+          ariaLabel={t("announcements.form.category")}
           items={categoryOptions}
           values={formik.values.categoryIds}
           handleChange={handleCategoryChange}
@@ -149,17 +149,15 @@ const AnnouncementForm = ({
             formik.touched.categoryIds &&
             (formik.errors.categoryIds as string | undefined)
           }
-          required
         />
       </Box>
 
       <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle2">
           {t("announcements.form.publicationDate")}
         </Typography>
         <FormikTextField
           name="publicationDate"
-          label={t("announcements.form.publicationDateLabel")}
           value={formik.values.publicationDate}
           onChange={handlePublicationDateChange}
           onBlur={formik.handleBlur}

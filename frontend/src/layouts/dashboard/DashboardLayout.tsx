@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Nav from "./Nav";
 import { useAnnouncementNotifications } from "src/hooks/announcements/useAnnouncementNotifications";
 import {
+  ContentHeaderStyled,
   DashboardContentStyled,
   DashboardRootStyled,
 } from "src/styles/customStyledComponent";
@@ -17,6 +18,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <DashboardRootStyled>
       <Nav />
       <DashboardContentStyled>
+        <ContentHeaderStyled />
         {children}
       </DashboardContentStyled>
     </DashboardRootStyled>

@@ -1,29 +1,29 @@
-import { ChangeEvent, ReactNode, useCallback } from "react";
-import InputAdornment from "@mui/material/InputAdornment";
+import { ChangeEvent, useCallback } from "react";
+import Box from "@mui/material/Box";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { commonStyles } from "src/styles/globalStyles";
 import { getTextFieldStyles } from "src/styles/inputStyles";
 
 type FormikTextFieldCustomProps = {
   name: string;
-  label: string;
   value: string;
   onChange: (value: string) => void;
+  label?: string;
   error?: boolean;
   helperText?: string | false;
-  endIcon?: ReactNode;
 };
 
 type FormikTextFieldProps = FormikTextFieldCustomProps &
-  Omit<TextFieldProps, keyof FormikTextFieldCustomProps | "sx">;
+  Omit<TextFieldProps, keyof FormikTextFieldCustomProps | "sx" | "label">;
 
 export const FormikTextField = ({
   name,
-  label,
   value,
   onChange,
+  label,
   error,
   helperText,
-  endIcon,
   ...props
 }: FormikTextFieldProps) => {
   const handleChange = useCallback(
@@ -32,26 +32,24 @@ export const FormikTextField = ({
   );
 
   return (
-    <TextField
-      name={name}
-      label={label}
-      value={value}
-      onChange={handleChange}
-      error={error}
-      helperText={helperText}
-      fullWidth
-      autoComplete="off"
-      {...props}
-      sx={getTextFieldStyles(error)}
-      InputProps={{
-        ...(props.InputProps || {}),
-        endAdornment: endIcon ? (
-          <InputAdornment position="end">{endIcon}</InputAdornment>
-        ) : (
-          props.InputProps?.endAdornment
-        ),
-      }}
-    />
+    <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap4px }}>
+      {label && (
+        <Typography variant="caption" color="text.secondary">
+          {label}
+        </Typography>
+      )}
+      <TextField
+        name={name}
+        value={value}
+        onChange={handleChange}
+        error={error}
+        helperText={helperText}
+        fullWidth
+        autoComplete="off"
+        {...props}
+        sx={getTextFieldStyles(error)}
+      />
+    </Box>
   );
 };
 

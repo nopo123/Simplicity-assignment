@@ -20,8 +20,7 @@
     },
     "filters": {
       "searchPlaceholder": "Hľadať v názve alebo obsahu",
-      "category": "Kategória",
-      "categoryPlaceholder": "Všetky kategórie"
+      "category": "Kategória"
     },
     "form": {
       "createTitle": "Vytvoriť oznam",
@@ -30,10 +29,8 @@
       "body": "Obsah",
       "category": "Kategória",
       "categoryHint": "Vyberte kategóriu, aby čitatelia vedeli, o čom oznam je",
-      "categoryLabel": "Kategórie",
       "categoryPlaceholder": "Vyberte kategórie",
       "publicationDate": "Dátum zverejnenia",
-      "publicationDateLabel": "Dátum zverejnenia",
       "publish": "Zverejniť",
       "created": "Oznam bol vytvorený",
       "updated": "Oznam bol upravený",

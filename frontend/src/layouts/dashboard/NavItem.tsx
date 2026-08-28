@@ -3,6 +3,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TFunction } from "i18next";
 import { NavItemConfig } from "./config-navigation";
+import { DIMENSIONS } from "src/config/config";
 import { NavItemStyled } from "src/styles/customStyledComponent";
 import { cssVar } from "src/utils/style/cssStyle";
 import { icon } from "src/utils/style/svgIcon";
@@ -27,13 +28,13 @@ const NavItem = ({ item, t }: NavItemProps) => {
     <NavItemStyled selected={isSelected} onClick={handleClick}>
       {icon(
         item.iconName,
-        22,
-        22,
-        isSelected ? cssVar("primary-darker") : cssVar("text-secondary"),
+        DIMENSIONS.NAV_ICON_SIZE,
+        DIMENSIONS.NAV_ICON_SIZE,
+        cssVar("text-primary"),
       )}
       <ListItemText
         primary={t(item.labelKey)}
-        primaryTypographyProps={{ variant: "body1" }}
+        primaryTypographyProps={{ variant: "caption", color: "text.primary" }}
       />
     </NavItemStyled>
   );

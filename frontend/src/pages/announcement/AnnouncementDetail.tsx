@@ -4,11 +4,11 @@ import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import AnnouncementForm from "src/components/form/announcement/AnnouncementForm";
+import { AnnouncementFormValues } from "src/components/form/announcement/types/announcementForm";
+import { mapFormValuesToPayload } from "src/components/form/announcement/utils/announcementFormValues";
 import ClassicLoader from "src/components/customs/ClassicLoader";
 import { useAnnouncementDetail } from "src/hooks/announcements/useAnnouncementDetail";
 import { globalStyles } from "src/styles/globalStyles";
-import { AnnouncementFormValues } from "src/components/form/announcement/types/announcementForm";
-import { mapFormValuesToPayload } from "src/components/form/announcement/utils/announcementFormValues";
 
 const AnnouncementDetail = () => {
   const { t } = useTranslation();
@@ -30,12 +30,14 @@ const AnnouncementDetail = () => {
   }
 
   return (
-    <Box sx={globalStyles.pageWrapper}>
-      <Typography variant="h4">
-        {announcementId
-          ? t("announcements.form.editTitle")
-          : t("announcements.form.createTitle")}
-      </Typography>
+    <Box sx={globalStyles.formPageWrapper}>
+      <Box sx={globalStyles.formTitleRow}>
+        <Typography variant="h6">
+          {announcementId
+            ? t("announcements.form.editTitle")
+            : t("announcements.form.createTitle")}
+        </Typography>
+      </Box>
 
       <AnnouncementForm
         announcement={announcement}

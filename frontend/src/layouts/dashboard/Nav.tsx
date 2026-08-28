@@ -17,7 +17,9 @@ const Nav = () => {
         <NavBrandAvatarStyled>
           {ORGANIZATION_NAME.charAt(0)}
         </NavBrandAvatarStyled>
-        <Typography variant="subtitle2">{ORGANIZATION_NAME}</Typography>
+        <Typography variant="caption" color="text.primary" fontWeight={700}>
+          {ORGANIZATION_NAME}
+        </Typography>
       </NavBrandStyled>
 
       {NAV_CONFIG.map((item) => (

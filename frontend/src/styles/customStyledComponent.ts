@@ -22,47 +22,43 @@ export const DashboardContentStyled = styled("main")({
 export const NavRootStyled = styled("nav")({
   ...commonStyles.flexColumn,
   ...commonStyles.bgGrey100,
-  ...commonStyles.overflowHidden,
   width: `${DIMENSIONS.NAV_WIDTH}px`,
   flexShrink: 0,
   borderRight: `1px solid ${cssVar("grey-200")}`,
-  paddingTop: "20px",
 });
 
 export const NavBrandStyled = styled(Box)({
   ...commonStyles.flexCenter,
-  ...commonStyles.gap12px,
-  padding: "0 20px 28px 20px",
+  ...commonStyles.gap8px,
+  height: `${DIMENSIONS.CONTENT_HEADER_HEIGHT}px`,
+  paddingLeft: "12px",
 });
 
 export const NavBrandAvatarStyled = styled(Box)({
   ...commonStyles.flexCenterCenter,
   ...commonStyles.borderRadius50,
-  width: "34px",
-  height: "34px",
+  width: "20px",
+  height: "20px",
   flexShrink: 0,
   backgroundColor: cssVar("primary-main"),
   color: cssVar("primary-contrastText"),
-  fontSize: "15px",
+  fontSize: "10px",
   fontWeight: 700,
 });
 
 export const NavItemStyled = styled(ListItemButton)({
-  ...commonStyles.gap12px,
+  ...commonStyles.gap8px,
   flexGrow: 0,
-  minHeight: "48px",
-  marginRight: "12px",
-  paddingLeft: "20px",
-  color: cssVar("text-secondary"),
-  borderRadius: "0 100% 100% 0 / 0 50% 50% 0",
+  minHeight: "34px",
+  paddingLeft: "14px",
+  paddingRight: "14px",
+  color: cssVar("text-primary"),
   "&:hover": {
     backgroundColor: cssVar("primary-lighter"),
   },
   "&.Mui-selected": {
-    flexGrow: 1,
     backgroundColor: cssVar("primary-light"),
     color: cssVar("text-primary"),
-    borderRadius: "0 100% 100% 0 / 0 32% 32% 0",
   },
   "&.Mui-selected:hover": {
     backgroundColor: cssVar("primary-light"),
@@ -86,11 +82,17 @@ export const CategoryChipStyled = styled(Chip)({
 export const FormActionsStyled = styled(Box)({
   ...commonStyles.flexEndCenter,
   ...commonStyles.gap12px,
-  width: "100%",
-  maxWidth: "560px",
+  ...commonStyles.fullWidth,
+  paddingTop: "8px",
 });
 
 export const AnnouncementCategoryFilterStyled = styled(Box)({
   width: "320px",
   maxWidth: "100%",
+});
+
+export const ContentHeaderStyled = styled("header")({
+  height: `${DIMENSIONS.CONTENT_HEADER_HEIGHT}px`,
+  flexShrink: 0,
+  borderBottom: `1px solid ${cssVar("grey-200")}`,
 });

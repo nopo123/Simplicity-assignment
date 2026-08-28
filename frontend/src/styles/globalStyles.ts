@@ -1,3 +1,4 @@
+import { DIMENSIONS } from "src/config/config";
 import { cssVar } from "src/utils/style/cssStyle";
 
 export const BORDER_COLOR = cssVar("grey-300");
@@ -111,9 +112,19 @@ export const globalStyles = {
   },
   formWrapper: {
     ...commonStyles.flexColumn,
-    ...commonStyles.gap24px,
+    ...commonStyles.gap16px,
     width: "100%",
-    maxWidth: "560px",
+    maxWidth: `${DIMENSIONS.FORM_MAX_WIDTH}px`,
+  },
+  formPageWrapper: {
+    ...commonStyles.flexColumn,
+    ...commonStyles.gap16px,
+    alignItems: "center",
+    padding: "40px 24px",
+  },
+  formTitleRow: {
+    width: "100%",
+    maxWidth: `${DIMENSIONS.FORM_MAX_WIDTH}px`,
   },
   filtersWrapper: {
     ...commonStyles.flexCenter,

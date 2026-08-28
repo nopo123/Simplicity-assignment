@@ -33,12 +33,12 @@ const AnnouncementFilters = ({
       <AnnouncementCategoryFilterStyled>
         <MultiAutocomplete
           name="categoryFilter"
-          label={t("announcements.filters.category")}
+          ariaLabel={t("announcements.filters.category")}
           items={categoryOptions}
           values={categoryIds}
           handleChange={onCategoryChange}
           noOptionsText={t("general.noResults")}
-          placeholder={t("announcements.filters.categoryPlaceholder")}
+          placeholder={t("announcements.filters.category")}
           disabled={isLoading}
         />
       </AnnouncementCategoryFilterStyled>

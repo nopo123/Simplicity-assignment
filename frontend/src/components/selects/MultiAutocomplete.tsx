@@ -17,11 +17,10 @@ interface MultiAutocompleteProps {
   items: CategoryOptionType[];
   values: number[];
   handleChange: (selectedIds: number[]) => void;
-  label: string;
-  name?: string;
-  placeholder?: string;
+  name: string;
+  ariaLabel: string;
+  placeholder: string;
   noOptionsText: string;
-  required?: boolean;
   disabled?: boolean;
   error?: boolean;
   helperText?: string | false;
@@ -32,11 +31,10 @@ const MultiAutocomplete = ({
   items,
   values,
   handleChange,
-  label,
   name,
+  ariaLabel,
   placeholder,
   noOptionsText,
-  required = false,
   disabled = false,
   error = false,
   helperText,
@@ -94,16 +92,14 @@ const MultiAutocomplete = ({
     (params: object) => (
       <TextField
         {...params}
-        label={label}
         name={name}
-        required={required}
         error={error}
         onBlur={onBlur}
         placeholder={selectedItems.length === 0 ? placeholder : undefined}
         sx={getAutocompleteStyles(error)}
       />
     ),
-    [label, name, required, error, onBlur, placeholder, selectedItems.length],
+    [name, error, onBlur, placeholder, selectedItems.length],
   );
 
   return (
@@ -112,7 +108,8 @@ const MultiAutocomplete = ({
         multiple
         filterSelectedOptions
         disableCloseOnSelect
-        id={`${name ?? label}-autocomplete`}
+        id={`${name}-autocomplete`}
+        aria-label={ariaLabel}
         options={items}
         value={selectedItems}
         onChange={handleAutocompleteChange}
