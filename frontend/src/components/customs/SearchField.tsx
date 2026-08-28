@@ -29,7 +29,6 @@ const SearchField = ({
       placeholder={placeholder}
       value={searchTerm}
       onChange={handleChange}
-      size="small"
       autoComplete="off"
       sx={searchFieldStyles}
       InputProps={{

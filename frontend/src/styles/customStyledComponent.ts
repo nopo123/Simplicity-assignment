@@ -69,12 +69,10 @@ export const NavItemStyled = styled(ListItemButton)({
   },
 });
 
-export const PageHeaderStyled = styled(Box)({
+export const PageTitleRowStyled = styled(Box)({
   ...commonStyles.flexSpaceBetweenCenter,
   ...commonStyles.gap16px,
   ...commonStyles.flexWrap,
-  borderBottom: `1px solid ${cssVar("grey-200")}`,
-  padding: "20px 40px",
 });
 
 export const CategoryChipStyled = styled(Chip)({

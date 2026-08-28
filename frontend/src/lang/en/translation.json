@@ -8,6 +8,7 @@
   },
   "announcements": {
     "title": "Announcements",
+    "create": "New announcement",
     "table": {
       "title": "Title",
       "publicationDate": "Publication date",

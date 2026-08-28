@@ -8,6 +8,7 @@
   },
   "announcements": {
     "title": "Oznamy",
+    "create": "Nový oznam",
     "table": {
       "title": "Názov",
       "publicationDate": "Dátum zverejnenia",
