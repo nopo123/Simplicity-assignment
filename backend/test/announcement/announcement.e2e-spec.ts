@@ -97,15 +97,11 @@ describe('AnnouncementController (e2e)', () => {
     });
 
     it('rejects a missing title', async () => {
-      await createAnnouncementWithout('title').expect(
-        HttpStatus.BAD_REQUEST,
-      );
+      await createAnnouncementWithout('title').expect(HttpStatus.BAD_REQUEST);
     });
 
     it('rejects a missing body', async () => {
-      await createAnnouncementWithout('body').expect(
-        HttpStatus.BAD_REQUEST,
-      );
+      await createAnnouncementWithout('body').expect(HttpStatus.BAD_REQUEST);
     });
 
     it('rejects a missing publication date', async () => {
@@ -166,6 +162,27 @@ describe('AnnouncementController (e2e)', () => {
           title: 'x'.repeat(ANNOUNCEMENT_TITLE_MAX_LENGTH + 1),
         }),
       ).expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('rejects a title made only of whitespace', async () => {
+      await createAnnouncement(buildCreateDto({ title: '   ' })).expect(
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('rejects a body made only of whitespace', async () => {
+      await createAnnouncement(buildCreateDto({ body: '     ' })).expect(
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('stores the title and the body without their surrounding whitespace', async () => {
+      const response = await createAnnouncement(
+        buildCreateDto({ title: '  Park closed  ', body: '  For repairs  ' }),
+      ).expect(HttpStatus.CREATED);
+
+      expect(response.body.title).toBe('Park closed');
+      expect(response.body.body).toBe('For repairs');
     });
 
     it('rejects an unknown property', async () => {
@@ -330,9 +347,7 @@ describe('AnnouncementController (e2e)', () => {
       );
 
       expect(
-        response.body.items[0].categories
-          .map((category) => category.id)
-          .sort(),
+        response.body.items[0].categories.map((category) => category.id).sort(),
       ).toEqual([cityId, healthId].sort());
     });
 

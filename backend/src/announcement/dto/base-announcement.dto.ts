@@ -12,12 +12,13 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { IsPublicationDate } from 'src/common/helpers/dto.helper';
-import { PUBLICATION_DATE_FORMAT } from 'src/common/utils/publication-date.util';
 import {
   ANNOUNCEMENT_BODY_MAX_LENGTH,
   ANNOUNCEMENT_TITLE_MAX_LENGTH,
 } from '../config/announcement-validation.config';
+import { Trim } from 'src/common/decorators/trim.decorator';
+import { IsPublicationDate } from 'src/common/helpers/dto.helper';
+import { PUBLICATION_DATE_FORMAT } from 'src/common/utils/publication-date.util';
 import { GetCategoryDto } from 'src/category/dto/get-category.dto';
 import { IdBaseDto } from 'src/common/dto/base.dto';
 
@@ -32,6 +33,7 @@ export class BaseAnnouncementDto extends IntersectionType(IdBaseDto) {
   @IsNotEmpty()
   @IsString()
   @MaxLength(ANNOUNCEMENT_TITLE_MAX_LENGTH)
+  @Trim()
   @Type(() => String)
   readonly title: string;
 
@@ -46,6 +48,7 @@ export class BaseAnnouncementDto extends IntersectionType(IdBaseDto) {
   @IsNotEmpty()
   @IsString()
   @MaxLength(ANNOUNCEMENT_BODY_MAX_LENGTH)
+  @Trim()
   @Type(() => String)
   readonly body: string;
 
@@ -56,6 +59,7 @@ export class BaseAnnouncementDto extends IntersectionType(IdBaseDto) {
     required: true,
   })
   @IsPublicationDate()
+  @Trim()
   @Type(() => String)
   readonly publicationDate: string;
 
