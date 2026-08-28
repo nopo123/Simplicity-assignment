@@ -23,7 +23,7 @@ export const FormikTextField = ({
 }: FormikTextFieldProps) => (
   <Box sx={globalStyles.fieldStack}>
     {label && (
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="subtitle2" color="text.secondary">
         {label}
       </Typography>
     )}
