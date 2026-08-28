@@ -3,7 +3,9 @@
 NestJS + TypeORM + PostgreSQL REST API for managing city announcements.
 
 - URL versioning is enabled, so every route is prefixed with `/v1`
-- Swagger UI on http://localhost:3000/swagger, and `swagger-spec.yaml` is rewritten on every boot
+- Swagger UI on http://localhost:3000/swagger; when `APP_ENV=dev` the boot also writes
+  `swagger-spec.yaml` next to the sources, for importing the API into other tooling. It is a
+  generated artifact and stays gitignored — the Swagger UI, not the file, is the reference
 - No authentication — every endpoint is public, which keeps the assignment focused on the announcements domain
 - CORS is open for the same reason: there are no cookies and no credentials to protect, so the API needs no origin allow list and no port-specific configuration
 
@@ -44,19 +46,34 @@ The API listens on http://localhost:3000.
 
 ## Environment variables
 
+There are two files and they are not interchangeable:
+
+| File | Read by | Purpose |
+|---|---|---|
+| root `.env` | `docker compose` | host port bindings and the credentials handed to both Postgres containers |
+| `backend/.env` | the Nest process | used when the backend runs on the host (Option B) and by `npm test` |
+
+In Option A the compose file passes the environment to the container directly, so `backend/.env` is
+not consulted at all. That is why `DATABASE_HOST` differs between them: `postgres_db` (the compose
+service name) inside the Docker network, `localhost` when the process runs on the host.
+
 | Variable | Example | Meaning |
 |---|---|---|
-| `APP_ENV` | `dev` | `dev` enables SQL logging when `DATABASE_ENABLE_LOGGING` is also true |
-| `PORT` | `3000` | HTTP port |
+| `APP_ENV` | `dev` | `dev` also writes `swagger-spec.yaml` on boot, and enables SQL logging together with `DATABASE_ENABLE_LOGGING` |
+| `PORT` | `3000` | Port the Nest process listens on. In the container this stays 3000; the host-side port is the root `.env` variable `BACKEND_PORT` |
 | `DATABASE_HOST` | `localhost` | `postgres_db` inside the Docker network |
-| `DATABASE_PORT` | `5432` | Host port of the `postgres_db` service. Change it here **and** in the root `.env` if 5432 is already taken on your machine — the compose files read the same variable |
-| `DATABASE_PORT_TEST` | `5433` | Host port of the `test_db` service, used by the e2e tests |
+| `DATABASE_PORT` | `5432` | Port of the application database |
+| `DATABASE_PORT_TEST` | `5433` | Port of `test_db`, used only by the e2e tests |
 | `DATABASE_NAME` | `announcements` | |
-| `DATABASE_NAME_TEST` | `announcements_test` | |
+| `DATABASE_NAME_TEST` | `announcements_test` | Created by the `test_db` container on first start |
 | `DATABASE_USER` | `admin` | |
 | `DATABASE_PASSWORD` | `admin` | |
-| `DATABASE_ENABLE_LOGGING` | `true` | |
+| `DATABASE_ENABLE_LOGGING` | `true` | Logs every SQL statement. The compose file forces it off for the container, so `docker compose logs backend` stays readable |
 | `DATABASE_MIGRATION_NAME` | `migration` | Name of the migrations bookkeeping table |
+
+If a port is already taken on your machine, change it in the root `.env` — all four host ports are
+variables there. See [the ports table](../README.md#ports), including the rebuild that a changed
+`BACKEND_PORT` requires on the frontend.
 
 ## Data model
 
@@ -212,9 +229,14 @@ create → list → search → filter → get → patch → delete.
 
 ## Automated tests
 
-Two Jest projects. The e2e project needs the `test_db` service from `docker-compose.dev.yml`
-running on port 5433 — it runs the migrations itself and truncates the announcement tables between
-tests.
+Two Jest projects. The e2e project needs the `test_db` service running — either compose file starts
+it. It runs the migrations itself and truncates the announcement tables between tests.
+
+It cannot reach the application database: [`test/jest.setup.js`](test/jest.setup.js) rewrites
+`DATABASE_PORT` and `DATABASE_NAME` to the `_TEST` values as a Jest `setupFiles` entry, which runs
+before `AppModule` is imported and therefore before the TypeORM config reads the environment. So the
+tests connect to `test_db` even though they boot the real `AppModule`, and `npm test` cannot wipe the
+data you were working with.
 
 ```bash
 npm run test:unit

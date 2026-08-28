@@ -18,6 +18,28 @@ The app runs on http://localhost:3001.
 |---|---|---|
 | `VITE_BACKEND_HOST` | `http://localhost:3000` | Base URL of the API and of the websocket namespace. Vite inlines it at **build** time, so the Docker image takes it as a build argument, not a runtime environment variable |
 
+## Docker image
+
+The image is multi-stage: Node builds `dist`, nginx serves it. Two things in
+[.docker/nginx.conf](.docker/nginx.conf) are not obvious.
+
+**SPA routing.** `try_files $uri /index.html` is what makes a hard refresh on `/announcements/5`
+return the app instead of an nginx 404 — that path exists only in the client-side router.
+
+**Caching.** `/assets/` holds two kinds of file and they need opposite policies:
+
+| Path | Cache-Control | Why |
+|---|---|---|
+| `/assets/icons/` | `public, no-cache` | copied verbatim from `public/`, so `edit.svg` keeps that name forever |
+| `/assets/` | `public, max-age=31536000, immutable` | Vite bundles carry a content hash, so a changed file has a new name |
+
+nginx matches the longest prefix, so the icons fall into the first rule. `no-cache` does not mean
+"do not store" — the browser keeps the file and revalidates, and nginx answers `304` from the ETag.
+
+Marking the icons `immutable` is a trap worth naming: it tells the browser never to revalidate, not
+even on a normal reload, so a redrawn icon keeps rendering the old shape for a year no matter how
+many times the image is rebuilt.
+
 ## Screens
 
 | Route | What it does | Document title |
