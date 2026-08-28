@@ -13,7 +13,7 @@ export const MEDIA_DOWN_SM = `@media (max-width:${BREAKPOINTS.SM}px)`;
 export const MEDIA_DOWN_MD = `@media (max-width:${BREAKPOINTS.MD}px)`;
 
 export const DIMENSIONS = {
-  NAV_WIDTH: 240,
+  NAV_WIDTH: 208,
   ICON_SIZE: 20,
   ICON_SIZE_SMALL: 18,
   NAV_ITEM_HEIGHT: 44,
