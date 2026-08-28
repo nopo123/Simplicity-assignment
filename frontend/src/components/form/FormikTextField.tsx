@@ -32,9 +32,9 @@ export const FormikTextField = ({
   );
 
   return (
-    <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap4px }}>
+    <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
       {label && (
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="body2" color="text.secondary">
           {label}
         </Typography>
       )}

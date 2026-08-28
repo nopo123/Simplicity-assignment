@@ -111,7 +111,7 @@ const AnnouncementForm = ({
 
       <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
         <Box>
-          <Typography variant="subtitle2">
+          <Typography variant="subtitle1">
             {t("announcements.form.category")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -139,7 +139,7 @@ const AnnouncementForm = ({
       </Box>
 
       <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
-        <Typography variant="subtitle2">
+        <Typography variant="subtitle1">
           {t("announcements.form.publicationDate")}
         </Typography>
         <FormikTextField

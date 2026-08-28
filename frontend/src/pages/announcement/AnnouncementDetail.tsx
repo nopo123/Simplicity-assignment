@@ -48,7 +48,7 @@ const AnnouncementDetail = () => {
         >
           {t("general.back")}
         </Button>
-        <Typography variant="h6">
+        <Typography variant="h4">
           {announcementId
             ? t("announcements.form.editTitle")
             : t("announcements.form.createTitle")}

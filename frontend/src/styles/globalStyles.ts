@@ -133,8 +133,8 @@ export const globalStyles = {
   },
   formWrapper: {
     ...commonStyles.flexColumn,
-    ...commonStyles.gap16px,
-    width: "100%",
+    ...commonStyles.gap24px,
+    ...commonStyles.fullWidth,
     maxWidth: `${DIMENSIONS.FORM_MAX_WIDTH}px`,
   },
   formPageWrapper: {
