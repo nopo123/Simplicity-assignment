@@ -94,18 +94,16 @@ export class AnnouncementService {
         )
       : null;
 
-    const announcementToSave = this.announcementRepository.create({
-      ...announcement,
-      title: updateAnnouncementDto.title ?? announcement.title,
-      body: updateAnnouncementDto.body ?? announcement.body,
-      publicationDate: updateAnnouncementDto.publicationDate
-        ? parsePublicationDate(updateAnnouncementDto.publicationDate)
-        : announcement.publicationDate,
-      categories: categories ?? announcement.categories,
-      updated: new Date(),
-    });
+    announcement.title = updateAnnouncementDto.title ?? announcement.title;
+    announcement.body = updateAnnouncementDto.body ?? announcement.body;
+    announcement.publicationDate = updateAnnouncementDto.publicationDate
+      ? parsePublicationDate(updateAnnouncementDto.publicationDate)
+      : announcement.publicationDate;
+    announcement.categories = categories ?? announcement.categories;
+    announcement.updated = new Date();
+
     const savedAnnouncement =
-      await this.announcementRepository.save(announcementToSave);
+      await this.announcementRepository.save(announcement);
 
     return mapAnnouncementEntityToDto(savedAnnouncement);
   }
