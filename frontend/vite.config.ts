@@ -5,10 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [
-    react({
-      plugins: [['@swc/plugin-emotion', {}]],
-      jsxImportSource: '@emotion/react',
-    }),
+    react(),
     tsconfigPaths({
       root: path.resolve(__dirname),
     }),

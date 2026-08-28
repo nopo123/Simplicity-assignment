@@ -31,7 +31,6 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@swc/plugin-emotion": "^7.0.2",
     "@types/lodash": "^4.17.14",
     "@types/node": "^22.10.5",
     "@types/react": "^18.3.18",
