@@ -3,7 +3,10 @@ import { commonStyles } from "./globalStyles";
 import { DIMENSIONS, MEDIA_DOWN_SM } from "src/config/config";
 import { cssVar } from "src/utils/style/cssStyle";
 
-const placeholderStyles = {
+const inputTextStyles = {
+  "& .MuiInputBase-input": {
+    color: cssVar("common-black"),
+  },
   "& .MuiInputBase-input::placeholder": {
     color: cssVar("text-secondary"),
     opacity: 1,
@@ -23,11 +26,8 @@ export const getTextFieldStyles = (
   error: boolean | undefined,
 ): SxProps<Theme> => ({
   ...commonStyles.fullWidth,
-  ...placeholderStyles,
+  ...inputTextStyles,
   ...outlinedStateStyles(error),
-  "& .MuiInputBase-input": {
-    color: cssVar("text-primary"),
-  },
   "& .MuiFormHelperText-root": {
     marginLeft: 0,
   },
@@ -37,16 +37,13 @@ export const getAutocompleteStyles = (
   error: boolean | undefined,
 ): SxProps<Theme> => ({
   ...commonStyles.fullWidth,
-  ...placeholderStyles,
+  ...inputTextStyles,
   ...outlinedStateStyles(error),
-  "& .MuiAutocomplete-input": {
-    color: cssVar("text-primary"),
-  },
 });
 
 export const searchFieldStyles: SxProps<Theme> = {
   ...commonStyles.fullWidth,
-  ...placeholderStyles,
+  ...inputTextStyles,
   maxWidth: `${DIMENSIONS.FILTER_WIDTH}px`,
   [MEDIA_DOWN_SM]: {
     maxWidth: "100%",
