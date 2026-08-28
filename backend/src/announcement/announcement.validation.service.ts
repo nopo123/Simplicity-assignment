@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AnnouncementRepository } from './announcement.repository';
 import { AnnouncementEntity } from './entities/announcement.entity';
 import { CategoryRepository } from 'src/category/category.repository';
@@ -32,9 +36,8 @@ export class AnnouncementValidationService {
       throw new BadRequestException('At least one category is required');
     }
 
-    const categories = await this.categoryRepository.findByIds(
-      requestedCategoryIds,
-    );
+    const categories =
+      await this.categoryRepository.findByIds(requestedCategoryIds);
     if (categories.length !== requestedCategoryIds.length) {
       const foundCategoryIds = categories.map((category) => category.id);
       const unknownCategoryIds = requestedCategoryIds.filter(

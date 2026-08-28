@@ -111,9 +111,8 @@ export class AnnouncementService {
   }
 
   async remove(announcementId: number): Promise<void> {
-    const deleteResult = await this.announcementRepository.delete(
-      announcementId,
-    );
+    const deleteResult =
+      await this.announcementRepository.delete(announcementId);
 
     if (!deleteResult.affected) {
       throw new NotFoundException('Announcement not found');

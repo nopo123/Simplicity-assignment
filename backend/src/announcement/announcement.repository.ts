@@ -15,7 +15,6 @@ const ANNOUNCEMENT_SORT_COLUMNS: Record<ANNOUNCEMENT_SORT_BY, string> = {
 const CATEGORY_FILTER_SUBQUERY =
   'announcement.id IN (SELECT announcement_category."announcementId" FROM announcement_category WHERE announcement_category."categoryId" IN (:...categoryIds))';
 
-
 @Injectable()
 export class AnnouncementRepository extends Repository<AnnouncementEntity> {
   constructor(
@@ -32,10 +31,9 @@ export class AnnouncementRepository extends Repository<AnnouncementEntity> {
   public async findPaginated(
     args: FindPaginatedAnnouncementsArgs,
   ): Promise<[AnnouncementEntity[], number]> {
-    const queryBuilder = this.createQueryBuilder('announcement').leftJoinAndSelect(
-      'announcement.categories',
-      'category',
-    );
+    const queryBuilder = this.createQueryBuilder(
+      'announcement',
+    ).leftJoinAndSelect('announcement.categories', 'category');
 
     if (args.search) {
       const search = buildLikePattern(args.search);

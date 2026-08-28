@@ -49,7 +49,10 @@ export const validatePublicationDate = (
   const hour = Number(match[4]);
   const minute = Number(match[5]);
 
-  if (month < PUBLICATION_DATE_MONTH_MIN || month > PUBLICATION_DATE_MONTH_MAX) {
+  if (
+    month < PUBLICATION_DATE_MONTH_MIN ||
+    month > PUBLICATION_DATE_MONTH_MAX
+  ) {
     return { error: PUBLICATION_DATE_ERROR.MONTH };
   }
 
