@@ -4,14 +4,10 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
 import { TFunction } from "i18next";
-import { useSnackbar } from "notistack";
 import { createValidationSchema } from "./validationSchema";
 import FormikTextField from "src/components/form/FormikTextField";
 import MultiAutocomplete from "src/components/selects/MultiAutocomplete";
-import {
-  ANNOUNCEMENT_BODY_ROWS,
-  VALIDATION_SNACKBAR_AUTO_HIDE_MS,
-} from "./config/announcement.config";
+import { ANNOUNCEMENT_BODY_ROWS } from "./config/announcement.config";
 import { PUBLICATION_DATE_FORMAT } from "src/config/date.config";
 import { useCategories } from "src/hooks/categories/useCategories";
 import { FormActionsStyled } from "src/styles/customStyledComponent";
@@ -33,7 +29,6 @@ const AnnouncementForm = ({
   t,
   onSubmit,
 }: AnnouncementFormProps) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { categoryOptions, isLoading: isLoadingCategories } = useCategories();
 
   const initialValues = useMemo(
@@ -61,21 +56,12 @@ const AnnouncementForm = ({
         categoryIds: true,
         publicationDate: true,
       });
-      enqueueSnackbar(
-        t("announcements.form.validationFailed", {
-          messages: Object.values(errors).join(", "),
-        }),
-        {
-          variant: "error",
-          autoHideDuration: VALIDATION_SNACKBAR_AUTO_HIDE_MS,
-        },
-      );
 
       return;
     }
 
     formik.handleSubmit();
-  }, [formik, enqueueSnackbar, t]);
+  }, [formik]);
 
   const handleTitleChange = useCallback(
     (value: string) => formik.setFieldValue("title", value),
@@ -178,7 +164,7 @@ const AnnouncementForm = ({
           variant="contained"
           color="primary"
           onClick={handlePublishClick}
-          disabled={isSaving}
+          disabled={isSaving || !formik.dirty}
         >
           {t("announcements.form.publish")}
         </Button>

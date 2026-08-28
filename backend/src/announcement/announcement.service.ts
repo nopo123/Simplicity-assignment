@@ -61,6 +61,7 @@ export class AnnouncementService {
 
   async create(
     createAnnouncementDto: CreateAnnouncementDto,
+    originClientId?: string,
   ): Promise<GetAnnouncementDto> {
     const categories =
       await this.announcementValidationService.validateCategories(
@@ -78,7 +79,10 @@ export class AnnouncementService {
 
     const announcementDto = mapAnnouncementEntityToDto(savedAnnouncement);
 
-    this.eventEmitter.emit(ANNOUNCEMENT_CREATED_EVENT, announcementDto);
+    this.eventEmitter.emit(ANNOUNCEMENT_CREATED_EVENT, {
+      announcement: announcementDto,
+      originClientId,
+    });
 
     return announcementDto;
   }

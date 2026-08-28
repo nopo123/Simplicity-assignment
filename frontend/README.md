@@ -145,5 +145,14 @@ npm run typecheck
 npm run lint
 ```
 
-The websocket notification needs a second client to observe: open the app, then create an
-announcement from Swagger or Postman — a snackbar appears and the table refreshes on its own.
+The websocket notification is deliberately **not** shown to the client that created the
+announcement — that client already gets its own success message, and two toasts for one action is
+noise. Each browser tab generates a client id in [src/lib/clientId.ts](src/lib/clientId.ts), axios
+sends it on every request as `x-client-id`, and the gateway echoes it back as the second argument of
+`announcementCreated`, which the notification hook compares against its own id.
+
+So to see the notification, create the announcement from a *different* client: Swagger, Postman, or a
+second browser tab. A snackbar appears and the table refreshes on its own.
+
+The Publish button stays disabled until something actually changes (`formik.dirty`), and a failed
+validation shows the message under each field rather than a snackbar.

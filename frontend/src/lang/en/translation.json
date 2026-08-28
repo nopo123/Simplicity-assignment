@@ -1,5 +1,6 @@
 {
   "general": {
+    "back": "Back",
     "errorOccurred": "Something went wrong, please try again",
     "noResults": "No results"
   },
@@ -35,8 +36,7 @@
       "created": "Announcement has been created",
       "updated": "Announcement has been updated",
       "deleted": "Announcement has been deleted",
-      "notFound": "Announcement was not found",
-      "validationFailed": "Please fix the following: {{messages}}"
+      "notFound": "Announcement was not found"
     },
     "validations": {
       "title": {

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { CLIENT_ID, CLIENT_ID_HEADER } from "./clientId";
 import { getEnv } from "src/config/env";
 
 function resolveHost(): string {
@@ -13,6 +14,12 @@ export const BACKEND_HOST = resolveHost();
 const axiosInstance = axios.create({
   baseURL: BACKEND_HOST,
   timeout: 30000,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  config.headers[CLIENT_ID_HEADER] = CLIENT_ID;
+
+  return config;
 });
 
 axiosInstance.interceptors.response.use((response) => response?.data);

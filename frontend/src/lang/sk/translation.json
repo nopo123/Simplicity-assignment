@@ -1,5 +1,6 @@
 {
   "general": {
+    "back": "Späť",
     "errorOccurred": "Niečo sa pokazilo, skúste to znova",
     "noResults": "Žiadne výsledky"
   },
@@ -35,8 +36,7 @@
       "created": "Oznam bol vytvorený",
       "updated": "Oznam bol upravený",
       "deleted": "Oznam bol zmazaný",
-      "notFound": "Oznam sa nenašiel",
-      "validationFailed": "Prosím doplňte: {{messages}}"
+      "notFound": "Oznam sa nenašiel"
     },
     "validations": {
       "title": {

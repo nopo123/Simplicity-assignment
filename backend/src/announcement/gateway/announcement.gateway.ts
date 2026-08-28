@@ -6,7 +6,7 @@ import {
   ANNOUNCEMENT_CREATED_MESSAGE,
   ANNOUNCEMENT_GATEWAY_NAMESPACE,
 } from '../announcement.events';
-import { GetAnnouncementDto } from '../dto/get-announcement.dto';
+import { AnnouncementCreatedEventPayload } from '../types/announcement.types';
 
 @WebSocketGateway({
   namespace: ANNOUNCEMENT_GATEWAY_NAMESPACE,
@@ -17,7 +17,11 @@ export class AnnouncementGateway {
   private readonly server: Server;
 
   @OnEvent(ANNOUNCEMENT_CREATED_EVENT)
-  handleAnnouncementCreated(announcement: GetAnnouncementDto): void {
-    this.server?.emit(ANNOUNCEMENT_CREATED_MESSAGE, announcement);
+  handleAnnouncementCreated(payload: AnnouncementCreatedEventPayload): void {
+    this.server?.emit(
+      ANNOUNCEMENT_CREATED_MESSAGE,
+      payload.announcement,
+      payload.originClientId,
+    );
   }
 }

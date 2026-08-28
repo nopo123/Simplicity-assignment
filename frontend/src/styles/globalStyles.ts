@@ -147,7 +147,9 @@ export const globalStyles = {
     },
   },
   formTitleRow: {
-    width: "100%",
+    ...commonStyles.flexCenter,
+    ...commonStyles.gap12px,
+    ...commonStyles.fullWidth,
     maxWidth: `${DIMENSIONS.FORM_MAX_WIDTH}px`,
   },
   filtersWrapper: {

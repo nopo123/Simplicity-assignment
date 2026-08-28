@@ -167,13 +167,21 @@ service does not know about the gateway, so the HTTP path stays independent of t
 
 - Namespace: `ws://localhost:3000/announcements`
 - Message: `announcementCreated`
-- Payload: the same object `POST` returned
+- First argument: the same object `POST` returned
+- Second argument: the `x-client-id` header the creating request sent, or `undefined`
+
+The second argument exists so the client that just created the announcement can skip notifying
+itself — it already showed its own success message. Every other connected client, including another
+tab of the same browser, still gets the notification.
 
 ```js
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:3000/announcements', { transports: ['websocket'] });
-socket.on('announcementCreated', (announcement) => console.log(announcement.title));
+socket.on('announcementCreated', (announcement, originClientId) => {
+  if (originClientId === myClientId) return;
+  console.log(announcement.title);
+});
 ```
 
 ## Testing the API
