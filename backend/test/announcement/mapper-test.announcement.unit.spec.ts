@@ -42,10 +42,10 @@ describe('mapAnnouncementEntityToDto', () => {
     expect(dto.body).toBe('Water will be shut off on Main Street');
   });
 
-  it('serialises every date as an ISO 8601 string', () => {
+  it('serialises the publication date in the transport format and the timestamps as ISO 8601', () => {
     const dto = mapAnnouncementEntityToDto(buildAnnouncement());
 
-    expect(dto.publicationDate).toBe('2026-08-28T08:55:00.000Z');
+    expect(dto.publicationDate).toBe('08/28/2026 08:55');
     expect(dto.created).toBe('2026-08-27T10:00:00.000Z');
     expect(dto.updated).toBe('2026-08-28T09:12:00.000Z');
   });

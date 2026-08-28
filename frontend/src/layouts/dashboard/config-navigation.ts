@@ -1,3 +1,5 @@
+import { PATHS } from "src/routes/paths";
+
 export type NavItemConfig = {
   readonly value: string;
   readonly path: string;
@@ -8,7 +10,7 @@ export type NavItemConfig = {
 export const NAV_CONFIG: readonly NavItemConfig[] = [
   {
     value: "announcements",
-    path: "/announcements",
+    path: PATHS.announcements.list,
     iconName: "announcement",
     labelKey: "navigation.announcements",
   },

@@ -1,9 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DataSource, EntityManager } from 'typeorm';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import utc from 'dayjs/plugin/utc';
 import { AnnouncementRepository } from './announcement.repository';
 import { AnnouncementValidationService } from './announcement.validation.service';
 import { ANNOUNCEMENT_CREATED_EVENT } from './announcement.events';
@@ -13,28 +9,20 @@ import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { GetAnnouncementDto } from './dto/get-announcement.dto';
 import { GetAnnouncementListDto } from './dto/get-announcement-list.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
-import { AnnouncementEntity } from './entities/announcement.entity';
 import { ANNOUNCEMENT_SORT_BY } from './enums/announcement.enum';
-import { SORT_ORDER } from 'src/common/enums/sort-order.enum';
 import { mapAnnouncementEntityToDto } from './mappers/announcement.mapper';
-import { CategoryEntity } from 'src/category/entities/category.entity';
-import { PUBLICATION_DATE_FORMAT } from 'src/common/utils/publication-date.util';
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
+import { SORT_ORDER } from 'src/common/enums/sort-order.enum';
+import { parsePublicationDate } from 'src/common/utils/publication-date.util';
 
 @Injectable()
 export class AnnouncementService {
   constructor(
     private readonly announcementRepository: AnnouncementRepository,
     private readonly announcementValidationService: AnnouncementValidationService,
-    private readonly dataSource: DataSource,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async findAll(
-    query: AnnouncementQueryDto,
-  ): Promise<GetAnnouncementListDto> {
+  async findAll(query: AnnouncementQueryDto): Promise<GetAnnouncementListDto> {
     const page = query.page ?? 1;
     const limit = query.limit ?? ANNOUNCEMENT_PAGE_SIZE_DEFAULT;
 
@@ -76,13 +64,9 @@ export class AnnouncementService {
     const announcement = this.announcementRepository.create({
       title: createAnnouncementDto.title,
       body: createAnnouncementDto.body,
-      publicationDate: dayjs
-        .utc(
-          createAnnouncementDto.publicationDate,
-          PUBLICATION_DATE_FORMAT,
-          true,
-        )
-        .toDate(),
+      publicationDate: parsePublicationDate(
+        createAnnouncementDto.publicationDate,
+      ),
       categories,
     });
     const savedAnnouncement =
@@ -110,59 +94,29 @@ export class AnnouncementService {
         )
       : null;
 
-    const updatedAnnouncement = await this.dataSource.transaction(
-      (entityManager) =>
-        this.updateWithManager(
-          entityManager,
-          announcement,
-          updateAnnouncementDto,
-          categories,
-        ),
-    );
-
-    return mapAnnouncementEntityToDto(updatedAnnouncement);
-  }
-
-  async remove(announcementId: number): Promise<void> {
-    const announcement =
-      await this.announcementValidationService.validateExistingAnnouncement(
-        announcementId,
-      );
-
-    await this.announcementRepository.delete(announcement.id);
-  }
-
-  private async updateWithManager(
-    entityManager: EntityManager,
-    announcement: AnnouncementEntity,
-    updateAnnouncementDto: UpdateAnnouncementDto,
-    categories: CategoryEntity[] | null,
-  ): Promise<AnnouncementEntity> {
-    const announcementRepository =
-      entityManager.getRepository(AnnouncementEntity);
-
-    const announcementToSave = announcementRepository.create({
+    const announcementToSave = this.announcementRepository.create({
       ...announcement,
       title: updateAnnouncementDto.title ?? announcement.title,
       body: updateAnnouncementDto.body ?? announcement.body,
       publicationDate: updateAnnouncementDto.publicationDate
-        ? dayjs
-            .utc(
-              updateAnnouncementDto.publicationDate,
-              PUBLICATION_DATE_FORMAT,
-              true,
-            )
-            .toDate()
+        ? parsePublicationDate(updateAnnouncementDto.publicationDate)
         : announcement.publicationDate,
       categories: categories ?? announcement.categories,
+      updated: new Date(),
     });
-    await announcementRepository.save(announcementToSave);
+    const savedAnnouncement =
+      await this.announcementRepository.save(announcementToSave);
 
-    const updated = await this.announcementRepository.touchUpdatedWithEntityManager(
-      entityManager,
-      announcement.id,
+    return mapAnnouncementEntityToDto(savedAnnouncement);
+  }
+
+  async remove(announcementId: number): Promise<void> {
+    const deleteResult = await this.announcementRepository.delete(
+      announcementId,
     );
 
-    return announcementRepository.create({ ...announcementToSave, updated });
+    if (!deleteResult.affected) {
+      throw new NotFoundException('Announcement not found');
+    }
   }
 }

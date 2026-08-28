@@ -29,8 +29,8 @@ const NavItem = ({ item, t, onNavigate }: NavItemProps) => {
     <NavItemStyled selected={isSelected} onClick={handleClick}>
       {icon(
         item.iconName,
-        DIMENSIONS.NAV_ICON_SIZE,
-        DIMENSIONS.NAV_ICON_SIZE,
+        DIMENSIONS.ICON_SIZE,
+        DIMENSIONS.ICON_SIZE,
         cssVar("text-primary"),
       )}
       <ListItemText

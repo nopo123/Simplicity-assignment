@@ -22,6 +22,4 @@ export const announcementApi = {
     id: number,
     data: UpdateAnnouncementType,
   ): Promise<AnnouncementType> => api.patch(`/v1/announcements/${id}`, data),
-  deleteAnnouncement: (id: number): Promise<void> =>
-    api.delete(`/v1/announcements/${id}`),
 };

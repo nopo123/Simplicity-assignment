@@ -46,7 +46,6 @@ export const validatePublicationDate = (
 
   const month = Number(match[1]);
   const day = Number(match[2]);
-  const year = Number(match[3]);
   const hour = Number(match[4]);
   const minute = Number(match[5]);
 
@@ -75,3 +74,9 @@ export const validatePublicationDate = (
 
   return null;
 };
+
+export const parsePublicationDate = (value: string): Date =>
+  dayjs.utc(value, PUBLICATION_DATE_FORMAT, true).toDate();
+
+export const formatPublicationDate = (value: Date): string =>
+  dayjs.utc(value).format(PUBLICATION_DATE_FORMAT);

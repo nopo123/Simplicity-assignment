@@ -76,9 +76,10 @@ and `CategoryEntity` carries no inverse property. Categories are fixed reference
 migration, so there is no write endpoint for them.
 
 `updated` is the *Last update* column of the announcements table and the default sort key of the
-list endpoint. An update that changes only the categories still moves it forward, because the
-repository touches the timestamp explicitly rather than relying on TypeORM's change detection (a
-junction-table-only change produces no `UPDATE` on the announcement row).
+list endpoint. An update that changes only the categories still moves it forward: the service puts a
+fresh `updated` on the entity it saves, which is what makes the scalar `UPDATE` fire at all — a
+junction-table-only change would otherwise produce no `UPDATE` on the announcement row and leave the
+timestamp behind.
 
 ## Endpoints
 

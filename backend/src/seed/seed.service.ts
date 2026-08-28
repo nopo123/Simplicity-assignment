@@ -1,15 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import utc from 'dayjs/plugin/utc';
 import { SEEDED_ANNOUNCEMENTS } from './config/seeded-announcements.config';
 import { AnnouncementRepository } from 'src/announcement/announcement.repository';
 import { CategoryRepository } from 'src/category/category.repository';
 import { createMapFromArray } from 'src/common/utils/array.util';
-import { PUBLICATION_DATE_FORMAT } from 'src/common/utils/publication-date.util';
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
+import { parsePublicationDate } from 'src/common/utils/publication-date.util';
 
 @Injectable()
 export class SeedService {
@@ -41,13 +35,9 @@ export class SeedService {
       this.announcementRepository.create({
         title: seededAnnouncement.title,
         body: seededAnnouncement.body,
-        publicationDate: dayjs
-          .utc(
-            seededAnnouncement.publicationDate,
-            PUBLICATION_DATE_FORMAT,
-            true,
-          )
-          .toDate(),
+        publicationDate: parsePublicationDate(
+          seededAnnouncement.publicationDate,
+        ),
         categories: seededAnnouncement.categoryCodes.map(
           (categoryCode) => categoriesByCode[categoryCode],
         ),

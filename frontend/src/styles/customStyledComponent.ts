@@ -4,7 +4,7 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import { styled } from "@mui/material/styles";
-import { commonStyles } from "./globalStyles";
+import { BORDER, commonStyles } from "./globalStyles";
 import { DIMENSIONS, MEDIA_DOWN_MD } from "src/config/config";
 import { cssVar } from "src/utils/style/cssStyle";
 
@@ -26,7 +26,7 @@ export const NavRootStyled = styled("nav")({
   ...commonStyles.bgGrey100,
   width: `${DIMENSIONS.NAV_WIDTH}px`,
   flexShrink: 0,
-  borderRight: `1px solid ${cssVar("grey-200")}`,
+  borderRight: BORDER,
 });
 
 export const NavBrandStyled = styled(Box)({
@@ -75,9 +75,6 @@ export const PageTitleRowStyled = styled(Box)({
 });
 
 export const CategoryChipStyled = styled(Chip)({
-  ...commonStyles.bgGrey150,
-  borderRadius: "6px",
-  color: cssVar("text-primary"),
   fontSize: "13px",
   height: "26px",
 });
@@ -110,7 +107,7 @@ export const ContentHeaderStyled = styled("header")({
   ...commonStyles.gap8px,
   height: `${DIMENSIONS.CONTENT_HEADER_HEIGHT}px`,
   flexShrink: 0,
-  borderBottom: `1px solid ${cssVar("grey-200")}`,
+  borderBottom: BORDER,
   paddingLeft: "12px",
 });
 

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
 import { announcementApi } from "src/api/announcement";
+import { QUERY_KEYS } from "src/hooks/common/queryKeys";
+import { useErrorSnackbar } from "src/hooks/common/useErrorSnackbar";
 import {
   AnnouncementType,
   CreateAnnouncementType,
@@ -11,40 +12,40 @@ import {
 
 interface UseAnnouncementDetailProps {
   announcementId?: number;
+  onLeave: () => void;
 }
 
 export const useAnnouncementDetail = ({
   announcementId,
+  onLeave,
 }: UseAnnouncementDetailProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showError } = useErrorSnackbar();
 
   const {
     data: announcement,
     isLoading,
     isError,
   } = useQuery<AnnouncementType>({
-    queryKey: ["announcement", announcementId],
+    queryKey: QUERY_KEYS.announcements.detail(announcementId),
     queryFn: () => announcementApi.getAnnouncement(announcementId),
     enabled: announcementId != null,
   });
 
   const invalidateAndLeave = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["announcements"] });
-    navigate("/announcements");
+    await queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.announcements.all,
+    });
+    onLeave();
   };
 
   const createMutation = useMutation({
     mutationFn: (values: CreateAnnouncementType) =>
       announcementApi.createAnnouncement(values),
-    onSuccess: async () => {
-      await invalidateAndLeave();
-    },
-    onError: () => {
-      enqueueSnackbar(t("general.errorOccurred"), { variant: "error" });
-    },
+    onSuccess: invalidateAndLeave,
+    onError: () => showError(),
   });
 
   const updateMutation = useMutation({
@@ -53,33 +54,20 @@ export const useAnnouncementDetail = ({
     onSuccess: async (updatedAnnouncement) => {
       enqueueSnackbar(t("announcements.form.updated"), { variant: "success" });
       queryClient.setQueryData(
-        ["announcement", announcementId],
+        QUERY_KEYS.announcements.detail(announcementId),
         updatedAnnouncement,
       );
       await invalidateAndLeave();
     },
-    onError: () => {
-      enqueueSnackbar(t("general.errorOccurred"), { variant: "error" });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: () => announcementApi.deleteAnnouncement(announcementId),
-    onSuccess: async () => {
-      enqueueSnackbar(t("announcements.form.deleted"), { variant: "success" });
-      await invalidateAndLeave();
-    },
-    onError: () => {
-      enqueueSnackbar(t("general.errorOccurred"), { variant: "error" });
-    },
+    onError: () => showError(),
   });
 
   useEffect(() => {
     if (isError) {
-      enqueueSnackbar(t("announcements.form.notFound"), { variant: "error" });
-      navigate("/announcements");
+      showError("announcements.form.notFound");
+      onLeave();
     }
-  }, [isError, enqueueSnackbar, t, navigate]);
+  }, [isError, showError, onLeave]);
 
   return {
     announcement,
@@ -87,8 +75,6 @@ export const useAnnouncementDetail = ({
     saveAnnouncement: announcementId
       ? updateMutation.mutate
       : createMutation.mutate,
-    deleteAnnouncement: deleteMutation.mutate,
     isSaving: createMutation.isPending || updateMutation.isPending,
-    isDeleting: deleteMutation.isPending,
   };
 };

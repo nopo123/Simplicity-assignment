@@ -1,7 +1,7 @@
 import { TypographyOptions } from "@mui/material/styles/createTypography";
 import { cssVar } from "src/utils/style/cssStyle";
 
-const primaryFont = "'Lato', 'Helvetica Neue', Arial, sans-serif";
+export const primaryFont = "'Lato', 'Helvetica Neue', Arial, sans-serif";
 
 function pxToRem(value: number): string {
   return `${value / 16}rem`;

@@ -1,14 +1,9 @@
 import axios from "axios";
 import { getEnv } from "src/config/env";
 
-function resolveHost(): string {
-  const host = getEnv("VITE_BACKEND_HOST");
-  if (host) return host;
-
-  return `${window.location.protocol}//${window.location.hostname}:3000`;
-}
-
-export const BACKEND_HOST = resolveHost();
+export const BACKEND_HOST =
+  getEnv("VITE_BACKEND_HOST") ??
+  `${window.location.protocol}//${window.location.hostname}:3000`;
 
 const axiosInstance = axios.create({
   baseURL: BACKEND_HOST,

@@ -5,10 +5,8 @@ import { DataSource } from 'typeorm';
 import { SetupTestingData } from '../interfaces/setup.interface';
 import { AppModule } from 'src/app.module';
 import { CategoryEntity } from 'src/category/entities/category.entity';
-import {
-  useGlobalFiltersHelper,
-  validationPipelinesHelper,
-} from 'src/common/helpers/app-create.helper';
+import { AllExceptionsFilter } from 'src/common/filters/all-exceptions-filter';
+import { validationPipelinesHelper } from 'src/common/helpers/app-create.helper';
 
 export class SetupHelper {
   private app: INestApplication;
@@ -22,7 +20,7 @@ export class SetupHelper {
     this.app = moduleFixture.createNestApplication<NestExpressApplication>();
 
     validationPipelinesHelper(this.app as NestExpressApplication);
-    useGlobalFiltersHelper(this.app as NestExpressApplication);
+    this.app.useGlobalFilters(new AllExceptionsFilter());
 
     this.app.enableVersioning({
       type: VersioningType.URI,

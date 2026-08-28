@@ -4,6 +4,7 @@ import {
   AnnouncementList,
   NotFoundPage,
 } from "./sections";
+import { PATHS } from "./paths";
 import DashboardLayout from "src/layouts/dashboard/DashboardLayout";
 
 const routes: RouteObject[] = [
@@ -16,7 +17,7 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <Navigate to="/announcements" replace />,
+        element: <Navigate to={PATHS.announcements.list} replace />,
       },
       {
         path: "announcements",

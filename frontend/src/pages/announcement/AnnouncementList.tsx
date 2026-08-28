@@ -8,6 +8,7 @@ import AnnouncementFilters from "src/components/announcement/AnnouncementFilters
 import AnnouncementTable from "src/components/announcement/AnnouncementTable";
 import ClassicLoader from "src/components/customs/ClassicLoader";
 import { useAnnouncements } from "src/hooks/announcements/useAnnouncements";
+import { PATHS } from "src/routes/paths";
 import { PageTitleRowStyled } from "src/styles/customStyledComponent";
 import { globalStyles } from "src/styles/globalStyles";
 
@@ -31,12 +32,12 @@ const AnnouncementList = () => {
   } = useAnnouncements();
 
   const handleEdit = useCallback(
-    (announcementId: number) => navigate(`/announcements/${announcementId}`),
+    (announcementId: number) => navigate(PATHS.announcements.detail(announcementId)),
     [navigate],
   );
 
   const handleCreate = useCallback(
-    () => navigate("/announcements/new"),
+    () => navigate(PATHS.announcements.new),
     [navigate],
   );
 

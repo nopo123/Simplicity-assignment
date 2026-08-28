@@ -1,11 +1,12 @@
 import { styled } from "@mui/material/styles";
 import { MaterialDesignContent } from "notistack";
+import { primaryFont } from "src/theme/typography";
 import { cssVar } from "src/utils/style/cssStyle";
 
 export const StyledSnackbarContent = styled(MaterialDesignContent)({
   "&.notistack-MuiContent": {
     borderRadius: "8px",
-    fontFamily: "'Lato', 'Helvetica Neue', Arial, sans-serif",
+    fontFamily: primaryFont,
   },
   "&.notistack-MuiContent-success": {
     backgroundColor: cssVar("success-darker"),

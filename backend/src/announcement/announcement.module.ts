@@ -17,6 +17,6 @@ import { CategoryModule } from 'src/category/category.module';
     AnnouncementValidationService,
     AnnouncementGateway,
   ],
-  exports: [AnnouncementService, AnnouncementRepository],
+  exports: [AnnouncementRepository],
 })
 export class AnnouncementModule {}

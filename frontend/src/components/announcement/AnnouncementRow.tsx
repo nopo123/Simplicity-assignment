@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -10,6 +10,7 @@ import { AnnouncementType } from "src/types/announcement";
 import { resolveCategoryLabels } from "src/utils/category/categoryLabel";
 import { formatPublicationDate } from "src/utils/date/dateFormat";
 import { cssVar } from "src/utils/style/cssStyle";
+import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
 
 interface AnnouncementRowProps {
@@ -60,7 +61,7 @@ const AnnouncementRow = ({
             size="small"
             onClick={handleEdit}
           >
-            {icon("edit", 18, 18, cssVar("text-primary"))}
+            {icon("edit", DIMENSIONS.ICON_SIZE_SMALL, DIMENSIONS.ICON_SIZE_SMALL, cssVar("text-primary"))}
           </IconButton>
         </Tooltip>
       </TableCell>
@@ -68,4 +69,4 @@ const AnnouncementRow = ({
   );
 };
 
-export default AnnouncementRow;
+export default memo(AnnouncementRow);

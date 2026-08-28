@@ -1,4 +1,4 @@
-import { FocusEvent, SyntheticEvent, useCallback, useMemo } from "react";
+import { FocusEvent, memo, SyntheticEvent, useCallback, useMemo } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -12,7 +12,6 @@ import {
   getAutocompleteStyles,
 } from "src/styles/inputStyles";
 import { CategoryOptionType } from "src/types/category";
-import { matchesSearch } from "src/utils/string/searchMatch";
 
 interface MultiAutocompleteProps {
   items: CategoryOptionType[];
@@ -53,20 +52,9 @@ const MultiAutocomplete = ({
     [handleChange],
   );
 
-  const getOptionLabel = useCallback(
-    (option: CategoryOptionType) => option.label,
-    [],
-  );
-
   const isOptionEqualToValue = useCallback(
     (option: CategoryOptionType, value: CategoryOptionType) =>
       option.id === value.id,
-    [],
-  );
-
-  const filterOptions = useCallback(
-    (options: CategoryOptionType[], { inputValue }: { inputValue: string }) =>
-      options.filter((option) => matchesSearch(option.label, inputValue)),
     [],
   );
 
@@ -89,6 +77,11 @@ const MultiAutocomplete = ({
     [],
   );
 
+  const autocompleteStyles = useMemo(
+    () => getAutocompleteStyles(error),
+    [error],
+  );
+
   const renderInput = useCallback(
     (params: object) => (
       <TextField
@@ -97,10 +90,10 @@ const MultiAutocomplete = ({
         error={error}
         onBlur={onBlur}
         placeholder={selectedItems.length === 0 ? placeholder : undefined}
-        sx={getAutocompleteStyles(error)}
+        sx={autocompleteStyles}
       />
     ),
-    [name, error, onBlur, placeholder, selectedItems.length],
+    [name, error, onBlur, placeholder, selectedItems.length, autocompleteStyles],
   );
 
   return (
@@ -114,9 +107,7 @@ const MultiAutocomplete = ({
         options={items}
         value={selectedItems}
         onChange={handleAutocompleteChange}
-        getOptionLabel={getOptionLabel}
         isOptionEqualToValue={isOptionEqualToValue}
-        filterOptions={filterOptions}
         renderTags={renderTags}
         renderInput={renderInput}
         disabled={disabled}
@@ -128,4 +119,4 @@ const MultiAutocomplete = ({
   );
 };
 
-export default MultiAutocomplete;
+export default memo(MultiAutocomplete);

@@ -4,6 +4,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import { searchFieldStyles } from "src/styles/inputStyles";
 import { cssVar } from "src/utils/style/cssStyle";
+import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
 
 interface SearchFieldProps {
@@ -41,12 +42,12 @@ const SearchField = ({
                   size="small"
                   onClick={handleClear}
                 >
-                  {icon("clear", 18, 18, cssVar("text-secondary"))}
+                  {icon("clear", DIMENSIONS.ICON_SIZE_SMALL, DIMENSIONS.ICON_SIZE_SMALL, cssVar("text-secondary"))}
                 </IconButton>
               </InputAdornment>
             )}
             <InputAdornment position="end">
-              {icon("search", 18, 18, cssVar("text-secondary"))}
+              {icon("search", DIMENSIONS.ICON_SIZE_SMALL, DIMENSIONS.ICON_SIZE_SMALL, cssVar("text-secondary"))}
             </InputAdornment>
           </>
         ),

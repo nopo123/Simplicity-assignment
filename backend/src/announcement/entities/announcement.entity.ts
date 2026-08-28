@@ -13,6 +13,7 @@ import { CategoryEntity } from 'src/category/entities/category.entity';
 @Entity({ name: 'announcement' })
 @Index('IDX_announcement_updated', ['updated'])
 @Index('IDX_announcement_publication_date', ['publicationDate'])
+@Index('IDX_announcement_title', ['title'])
 export class AnnouncementEntity extends BaseAbstractClass {
   @PrimaryGeneratedColumn()
   id: number;

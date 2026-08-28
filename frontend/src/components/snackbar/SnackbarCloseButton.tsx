@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import IconButton from "@mui/material/IconButton";
 import { SnackbarKey, useSnackbar } from "notistack";
+import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
 
 interface SnackbarCloseButtonProps {
@@ -17,7 +18,7 @@ const SnackbarCloseButton = ({ snackbarKey }: SnackbarCloseButtonProps) => {
 
   return (
     <IconButton aria-label="close" size="small" sx={{ color: "inherit" }} onClick={handleClose}>
-      {icon("clear", 18, 18)}
+      {icon("clear", DIMENSIONS.ICON_SIZE_SMALL, DIMENSIONS.ICON_SIZE_SMALL)}
     </IconButton>
   );
 };

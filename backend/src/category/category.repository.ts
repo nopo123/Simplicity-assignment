@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CategoryEntity } from './entities/category.entity';
 
 @Injectable()
@@ -29,17 +29,4 @@ export class CategoryRepository extends Repository<CategoryEntity> {
     });
   }
 
-  public async findByIdsWithEntityManager(
-    entityManager: EntityManager,
-    ids: readonly number[],
-  ): Promise<CategoryEntity[]> {
-    if (ids.length === 0) return [];
-
-    const categoryRepository = entityManager.getRepository(CategoryEntity);
-
-    return categoryRepository.find({
-      where: { id: In([...ids]) },
-      order: { orderingNumber: 'ASC', id: 'ASC' },
-    });
-  }
 }

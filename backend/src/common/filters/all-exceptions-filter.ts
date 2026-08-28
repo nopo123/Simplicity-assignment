@@ -3,12 +3,30 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import dayjs from 'dayjs';
 import { formatErrorForLog } from '../helpers/error-log.helper';
+
+const INTERNAL_SERVER_ERROR_MESSAGE = 'Internal server error';
+
+const resolveClientMessage = (exception: unknown, status: number): string => {
+  if (status === 500 || !(exception instanceof HttpException)) {
+    return INTERNAL_SERVER_ERROR_MESSAGE;
+  }
+
+  const exceptionResponse = exception.getResponse();
+  if (
+    typeof exceptionResponse === 'object' &&
+    exceptionResponse !== null &&
+    'message' in exceptionResponse
+  ) {
+    return String((exceptionResponse as { message: unknown }).message);
+  }
+
+  return exception.message;
+};
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -21,26 +39,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const status =
       exception instanceof HttpException ? exception.getStatus() : 500;
-    const exceptionResponse =
-      exception instanceof HttpException ? exception.getResponse() : null;
-
-    let clientMessage = 'Internal server error';
-
-    if (
-      exception instanceof HttpException &&
-      !(exception instanceof InternalServerErrorException) &&
-      status !== 500
-    ) {
-      if (
-        typeof exceptionResponse === 'object' &&
-        exceptionResponse !== null &&
-        'message' in exceptionResponse
-      ) {
-        clientMessage = (exceptionResponse as { message: string }).message;
-      } else {
-        clientMessage = exception.message;
-      }
-    }
 
     const shouldLog =
       process.env.APP_ENV !== 'test' ||
@@ -51,7 +49,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     response.status(status).json({
       statusCode: status,
-      message: clientMessage,
+      message: resolveClientMessage(exception, status),
       timestamp: dayjs().toISOString(),
     });
   }

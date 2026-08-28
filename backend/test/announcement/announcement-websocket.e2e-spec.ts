@@ -75,7 +75,7 @@ describe('AnnouncementGateway (e2e)', () => {
       .send({
         title: 'Storm warning for the weekend',
         body: 'A strong storm front is expected on Saturday evening',
-        publicationDate: '2026-08-28T08:55:00.000Z',
+        publicationDate: '08/28/2026 08:55',
         categoryIds: [categories[0].id],
       } as CreateAnnouncementDto)
       .expect(HttpStatus.CREATED);

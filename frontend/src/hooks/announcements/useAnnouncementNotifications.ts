@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
 import { io } from "socket.io-client";
+import { QUERY_KEYS } from "src/hooks/common/queryKeys";
 import { BACKEND_HOST } from "src/lib/lib";
 import { AnnouncementType } from "src/types/announcement";
 
@@ -28,7 +29,9 @@ export const useAnnouncementNotifications = () => {
           }),
           { variant: "info" },
         );
-        queryClient.invalidateQueries({ queryKey: ["announcements"] });
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.announcements.all,
+        });
       },
     );
 

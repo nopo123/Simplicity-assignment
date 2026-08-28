@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useMemo } from "react";
+import { memo, MouseEvent, useCallback, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -131,4 +131,4 @@ const AnnouncementTable = ({
   );
 };
 
-export default AnnouncementTable;
+export default memo(AnnouncementTable);

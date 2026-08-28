@@ -7,7 +7,9 @@ import AnnouncementForm from "src/components/form/announcement/AnnouncementForm"
 import { AnnouncementFormValues } from "src/components/form/announcement/types/announcementForm";
 import { mapFormValuesToPayload } from "src/components/form/announcement/utils/announcementFormValues";
 import ClassicLoader from "src/components/customs/ClassicLoader";
+import { DIMENSIONS } from "src/config/config";
 import { useAnnouncementDetail } from "src/hooks/announcements/useAnnouncementDetail";
+import { PATHS } from "src/routes/paths";
 import {
   FormBackButtonStyled,
   FormTitleRowStyled,
@@ -22,8 +24,13 @@ const AnnouncementDetail = () => {
 
   const announcementId = id ? Number(id) : undefined;
 
+  const handleBack = useCallback(
+    () => navigate(PATHS.announcements.list),
+    [navigate],
+  );
+
   const { announcement, isLoading, saveAnnouncement, isSaving } =
-    useAnnouncementDetail({ announcementId });
+    useAnnouncementDetail({ announcementId, onLeave: handleBack });
 
   const handleSubmit = useCallback(
     (values: AnnouncementFormValues) =>
@@ -31,12 +38,7 @@ const AnnouncementDetail = () => {
     [saveAnnouncement],
   );
 
-  const handleBack = useCallback(
-    () => navigate("/announcements"),
-    [navigate],
-  );
-
-  if (announcementId && isLoading) {
+  if (isLoading) {
     return <ClassicLoader />;
   }
 
@@ -46,7 +48,11 @@ const AnnouncementDetail = () => {
         <FormBackButtonStyled
           variant="text"
           color="secondary"
-          startIcon={icon("arrow-left", 18, 18)}
+          startIcon={icon(
+            "arrow-left",
+            DIMENSIONS.ICON_SIZE_SMALL,
+            DIMENSIONS.ICON_SIZE_SMALL,
+          )}
           onClick={handleBack}
         >
           {t("general.back")}

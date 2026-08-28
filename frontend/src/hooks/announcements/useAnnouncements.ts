@@ -1,20 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { useSnackbar } from "notistack";
 import { announcementApi } from "src/api/announcement";
 import { ROWS_PER_PAGE } from "src/config/config";
 import {
   ANNOUNCEMENT_SORT_BY,
   AnnouncementListType,
+  AnnouncementType,
   SORT_ORDER,
 } from "src/types/announcement";
 import { useDebouncedCallback } from "src/hooks/common/useDebouncedCallback";
+import { QUERY_KEYS } from "src/hooks/common/queryKeys";
+import { useErrorSnackbar } from "src/hooks/common/useErrorSnackbar";
+
+const EMPTY_ANNOUNCEMENTS: AnnouncementType[] = [];
 
 export const useAnnouncements = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const { t } = useTranslation();
-
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
@@ -39,10 +39,9 @@ export const useAnnouncements = () => {
   const {
     data: announcementList,
     isLoading,
-    isFetching,
     isError,
   } = useQuery<AnnouncementListType>({
-    queryKey: ["announcements", query],
+    queryKey: QUERY_KEYS.announcements.list(query),
     queryFn: () => announcementApi.getAnnouncements(query),
     placeholderData: keepPreviousData,
   });
@@ -66,12 +65,11 @@ export const useAnnouncements = () => {
 
   const handleCategoryChange = useCallback(
     (selectedCategoryIds: number[]) => {
-      debouncedSetSearch.cancel();
-      setSearch(searchInput);
+      debouncedSetSearch.flush();
       setCategoryIds(selectedCategoryIds);
       setPage(0);
     },
-    [debouncedSetSearch, searchInput],
+    [debouncedSetSearch],
   );
 
   const handleSort = useCallback(
@@ -83,7 +81,7 @@ export const useAnnouncements = () => {
           : SORT_ORDER.DESC;
 
       setSortBy(field);
-      setSortOrder(isSameField ? nextSortOrder : SORT_ORDER.DESC);
+      setSortOrder(nextSortOrder);
       setPage(0);
     },
     [sortBy, sortOrder],
@@ -93,17 +91,12 @@ export const useAnnouncements = () => {
     setPage(nextPage);
   }, []);
 
-  useEffect(() => {
-    if (isError) {
-      enqueueSnackbar(t("general.errorOccurred"), { variant: "error" });
-    }
-  }, [isError, enqueueSnackbar, t]);
+  useErrorSnackbar(isError);
 
   return {
-    announcements: announcementList?.items ?? [],
+    announcements: announcementList?.items ?? EMPTY_ANNOUNCEMENTS,
     total: announcementList?.total ?? 0,
     isLoading,
-    isFetching,
     searchInput,
     categoryIds,
     sortBy,

@@ -11,7 +11,7 @@ import { ANNOUNCEMENT_BODY_ROWS } from "./config/announcement.config";
 import { PUBLICATION_DATE_FORMAT } from "src/config/date.config";
 import { useCategories } from "src/hooks/categories/useCategories";
 import { FormActionsStyled } from "src/styles/customStyledComponent";
-import { commonStyles, globalStyles } from "src/styles/globalStyles";
+import { globalStyles } from "src/styles/globalStyles";
 import { AnnouncementType } from "src/types/announcement";
 import { AnnouncementFormValues } from "./types/announcementForm";
 import { mapAnnouncementToFormValues } from "src/components/form/announcement/utils/announcementFormValues";
@@ -46,41 +46,9 @@ const AnnouncementForm = ({
     onSubmit,
   });
 
-  const handlePublishClick = useCallback(async () => {
-    const errors = await formik.validateForm();
-
-    if (Object.keys(errors).length > 0) {
-      formik.setTouched({
-        title: true,
-        body: true,
-        categoryIds: true,
-        publicationDate: true,
-      });
-
-      return;
-    }
-
-    formik.handleSubmit();
-  }, [formik]);
-
-  const handleTitleChange = useCallback(
-    (value: string) => formik.setFieldValue("title", value),
-    [formik],
-  );
-
-  const handleBodyChange = useCallback(
-    (value: string) => formik.setFieldValue("body", value),
-    [formik],
-  );
-
-  const handlePublicationDateChange = useCallback(
-    (value: string) => formik.setFieldValue("publicationDate", value),
-    [formik],
-  );
-
   const handleCategoryChange = useCallback(
     (selectedIds: number[]) => formik.setFieldValue("categoryIds", selectedIds),
-    [formik],
+    [formik.setFieldValue],
   );
 
   return (
@@ -89,7 +57,7 @@ const AnnouncementForm = ({
         name="title"
         label={t("announcements.form.title")}
         value={formik.values.title}
-        onChange={handleTitleChange}
+        onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         error={formik.touched.title && Boolean(formik.errors.title)}
         helperText={formik.touched.title && formik.errors.title}
@@ -100,7 +68,7 @@ const AnnouncementForm = ({
         name="body"
         label={t("announcements.form.body")}
         value={formik.values.body}
-        onChange={handleBodyChange}
+        onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         error={formik.touched.body && Boolean(formik.errors.body)}
         helperText={formik.touched.body && formik.errors.body}
@@ -109,7 +77,7 @@ const AnnouncementForm = ({
         required
       />
 
-      <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
+      <Box sx={globalStyles.fieldStack}>
         <Box>
           <Typography variant="subtitle1">
             {t("announcements.form.category")}
@@ -138,14 +106,14 @@ const AnnouncementForm = ({
         />
       </Box>
 
-      <Box sx={{ ...commonStyles.flexColumn, ...commonStyles.gap8px }}>
+      <Box sx={globalStyles.fieldStack}>
         <Typography variant="subtitle1">
           {t("announcements.form.publicationDate")}
         </Typography>
         <FormikTextField
           name="publicationDate"
           value={formik.values.publicationDate}
-          onChange={handlePublicationDateChange}
+          onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           placeholder={PUBLICATION_DATE_FORMAT}
           error={
@@ -163,7 +131,7 @@ const AnnouncementForm = ({
         <Button
           variant="contained"
           color="primary"
-          onClick={handlePublishClick}
+          onClick={formik.submitForm}
           disabled={isSaving || !formik.dirty}
         >
           {t("announcements.form.publish")}

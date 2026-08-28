@@ -2,9 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class ExceptionBaseDto {
+export class ExceptionDto {
   @ApiProperty({
-    description: 'Human readable description of what went wrong',
+    example: 400,
+    description: 'Http status code of the failure',
+    type: Number,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  readonly statusCode: number;
+
+  @ApiProperty({
+    description:
+      'Human readable description of what went wrong. Validation failures list every violated rule, separated by commas.',
     type: String,
     required: true,
   })
@@ -23,28 +35,4 @@ export class ExceptionBaseDto {
   @IsString()
   @Type(() => String)
   readonly timestamp: string;
-}
-
-export class ExceptionBadRequestDto extends ExceptionBaseDto {
-  @ApiProperty({ example: 400, type: Number, required: true })
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  readonly statusCode: number;
-}
-
-export class ExceptionNotFoundDto extends ExceptionBaseDto {
-  @ApiProperty({ example: 404, type: Number, required: true })
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  readonly statusCode: number;
-}
-
-export class ExceptionInternalServerErrorDto extends ExceptionBaseDto {
-  @ApiProperty({ example: 500, type: Number, required: true })
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  readonly statusCode: number;
 }

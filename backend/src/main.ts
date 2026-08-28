@@ -2,17 +2,16 @@ import { config } from 'dotenv';
 
 config();
 
+import * as fs from 'fs';
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as YAML from 'yaml';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions-filter';
 import {
-  corsHelper,
-  securityHardeningHelper,
   swaggerHelper,
-  useGlobalFiltersHelper,
   validationPipelinesHelper,
-  writeSwaggerSpecToFile,
 } from './common/helpers/app-create.helper';
 
 async function bootstrap() {
@@ -20,9 +19,9 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
 
-  securityHardeningHelper(app);
+  app.disable('x-powered-by');
   validationPipelinesHelper(app);
-  useGlobalFiltersHelper(app);
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -30,9 +29,11 @@ async function bootstrap() {
   });
 
   const swaggerDocument = swaggerHelper(app);
-  writeSwaggerSpecToFile(swaggerDocument);
+  if (process.env.APP_ENV === 'dev') {
+    fs.writeFileSync('./swagger-spec.yaml', YAML.stringify(swaggerDocument));
+  }
 
-  corsHelper(app);
+  app.enableCors();
 
   await app.listen(process.env.PORT || 3000);
 }

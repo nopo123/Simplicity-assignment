@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import {
   BadRequestException,
   ValidationError,
@@ -6,8 +5,6 @@ import {
 } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
-import * as YAML from 'yaml';
-import { AllExceptionsFilter } from '../filters/all-exceptions-filter';
 import { flattenValidationErrors } from './dto.helper';
 
 export const validationPipelinesHelper = (app: NestExpressApplication) => {
@@ -30,24 +27,6 @@ export const validationPipelinesHelper = (app: NestExpressApplication) => {
   return app;
 };
 
-export const useGlobalFiltersHelper = (app: NestExpressApplication) => {
-  app.useGlobalFilters(new AllExceptionsFilter());
-
-  return app;
-};
-
-export const securityHardeningHelper = (app: NestExpressApplication) => {
-  app.disable('x-powered-by');
-
-  return app;
-};
-
-export const corsHelper = (app: NestExpressApplication) => {
-  app.enableCors();
-
-  return app;
-};
-
 export const swaggerHelper = (app: NestExpressApplication): OpenAPIObject => {
   const options = new DocumentBuilder()
     .setTitle('Announcements')
@@ -60,8 +39,4 @@ export const swaggerHelper = (app: NestExpressApplication): OpenAPIObject => {
   SwaggerModule.setup('swagger', app, document);
 
   return document;
-};
-
-export const writeSwaggerSpecToFile = (document: OpenAPIObject): void => {
-  fs.writeFileSync('./swagger-spec.yaml', YAML.stringify(document));
 };

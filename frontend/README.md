@@ -138,6 +138,12 @@ That returns nothing.
   components in [src/styles/customStyledComponent.ts](src/styles/customStyledComponent.ts)
 - Components never call `useQuery` / `useMutation` or an `api/*` function; that lives in
   `src/hooks/{feature}/`
+- Query keys come from [src/hooks/common/queryKeys.ts](src/hooks/common/queryKeys.ts) and route
+  paths from [src/routes/paths.ts](src/routes/paths.ts) — a cache key is a contract between a reader
+  and whatever invalidates it, and a renamed literal would break invalidation with no type error
+- The generic error snackbar lives in
+  [src/hooks/common/useErrorSnackbar.ts](src/hooks/common/useErrorSnackbar.ts); hooks only spell out
+  messages that are genuinely specific to them
 - Icons are single-colour SVG masks in `public/assets/icons/`, rendered through `SvgColor` and the
   `icon()` helper, so they take their colour from `currentColor`
 - Feature-local config, types and utils sit inside the feature folder; `src/config/` holds only what

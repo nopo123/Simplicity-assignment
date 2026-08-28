@@ -34,7 +34,6 @@
       "publicationDate": "Publication date",
       "publish": "Publish",
       "updated": "Announcement has been updated",
-      "deleted": "Announcement has been deleted",
       "notFound": "Announcement was not found"
     },
     "validations": {
