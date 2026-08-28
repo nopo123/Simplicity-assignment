@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import AnnouncementFilters from "src/components/announcement/AnnouncementFilters";
 import AnnouncementTable from "src/components/announcement/AnnouncementTable";
 import ClassicLoader from "src/components/customs/ClassicLoader";
+import PageTitle from "src/components/customs/PageTitle";
 import { useAnnouncements } from "src/hooks/announcements/useAnnouncements";
 import { PATHS } from "src/routes/paths";
 import { PageTitleRowStyled } from "src/styles/customStyledComponent";
@@ -43,6 +44,8 @@ const AnnouncementList = () => {
 
   return (
     <Box sx={globalStyles.pageWrapper}>
+      <PageTitle title={t("announcements.title")} />
+
       <PageTitleRowStyled>
         <Typography variant="h4">{t("announcements.title")}</Typography>
         <Button variant="contained" color="primary" onClick={handleCreate}>

@@ -7,6 +7,7 @@ import AnnouncementForm from "src/components/form/announcement/AnnouncementForm"
 import { AnnouncementFormValues } from "src/components/form/announcement/types/announcementForm";
 import { mapFormValuesToPayload } from "src/components/form/announcement/utils/announcementFormValues";
 import ClassicLoader from "src/components/customs/ClassicLoader";
+import PageTitle from "src/components/customs/PageTitle";
 import { DIMENSIONS } from "src/config/config";
 import { useAnnouncementDetail } from "src/hooks/announcements/useAnnouncementDetail";
 import { PATHS } from "src/routes/paths";
@@ -23,6 +24,10 @@ const AnnouncementDetail = () => {
   const navigate = useNavigate();
 
   const announcementId = id ? Number(id) : undefined;
+
+  const pageTitle = announcementId
+    ? t("announcements.form.editTitle")
+    : t("announcements.form.createTitle");
 
   const handleBack = useCallback(
     () => navigate(PATHS.announcements.list),
@@ -44,6 +49,8 @@ const AnnouncementDetail = () => {
 
   return (
     <Box sx={globalStyles.formPageWrapper}>
+      <PageTitle title={pageTitle} />
+
       <FormTitleRowStyled>
         <FormBackButtonStyled
           variant="text"
@@ -57,11 +64,7 @@ const AnnouncementDetail = () => {
         >
           {t("general.back")}
         </FormBackButtonStyled>
-        <Typography variant="h4">
-          {announcementId
-            ? t("announcements.form.editTitle")
-            : t("announcements.form.createTitle")}
-        </Typography>
+        <Typography variant="h4">{pageTitle}</Typography>
       </FormTitleRowStyled>
 
       <AnnouncementForm

@@ -20,11 +20,16 @@ The app runs on http://localhost:3001.
 
 ## Screens
 
-| Route | What it does |
-|---|---|
-| `/announcements` | Table sorted by *Last update* descending, with a text search and a category filter |
-| `/announcements/new` | Empty form for a new announcement |
-| `/announcements/:id` | The same form, prefilled from the announcement |
+| Route | What it does | Document title |
+|---|---|---|
+| `/announcements` | Table sorted by *Last update* descending, with a text search and a category filter | Announcements |
+| `/announcements/new` | Empty form for a new announcement | Create the announcement |
+| `/announcements/:id` | The same form, prefilled from the announcement | Edit the announcement |
+
+Each page sets its own browser-tab title through
+[PageTitle](src/components/customs/PageTitle.tsx), a thin wrapper over `react-helmet-async`. It
+takes the already-translated string so the `t` call stays on the page, and the static `<title>` in
+`index.html` remains the pre-hydration fallback.
 
 ## Layout notes from the design
 
