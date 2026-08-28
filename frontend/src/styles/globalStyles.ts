@@ -146,12 +146,6 @@ export const globalStyles = {
       padding: "24px 16px",
     },
   },
-  formTitleRow: {
-    ...commonStyles.flexCenter,
-    ...commonStyles.gap12px,
-    ...commonStyles.fullWidth,
-    maxWidth: `${DIMENSIONS.FORM_MAX_WIDTH}px`,
-  },
   filtersWrapper: {
     ...commonStyles.flexCenter,
     ...commonStyles.gap16px,

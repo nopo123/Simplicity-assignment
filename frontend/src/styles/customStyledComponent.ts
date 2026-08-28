@@ -1,4 +1,5 @@
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -124,5 +125,30 @@ export const MobileMenuButtonStyled = styled(IconButton)({
   display: "none",
   [MEDIA_DOWN_MD]: {
     display: "inline-flex",
+  },
+});
+
+export const FormTitleRowStyled = styled(Box)({
+  ...commonStyles.positionRelative,
+  ...commonStyles.flexCenter,
+  ...commonStyles.fullWidth,
+  maxWidth: `${DIMENSIONS.FORM_MAX_WIDTH}px`,
+  [MEDIA_DOWN_MD]: {
+    ...commonStyles.flexColumn,
+    alignItems: "flex-start",
+    gap: "4px",
+  },
+});
+
+export const FormBackButtonStyled = styled(Button)({
+  position: "absolute",
+  right: "100%",
+  marginRight: "16px",
+  whiteSpace: "nowrap",
+  [MEDIA_DOWN_MD]: {
+    position: "static",
+    right: "auto",
+    marginRight: 0,
+    marginLeft: "-12px",
   },
 });

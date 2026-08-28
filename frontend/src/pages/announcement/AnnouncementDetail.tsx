@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -9,6 +8,10 @@ import { AnnouncementFormValues } from "src/components/form/announcement/types/a
 import { mapFormValuesToPayload } from "src/components/form/announcement/utils/announcementFormValues";
 import ClassicLoader from "src/components/customs/ClassicLoader";
 import { useAnnouncementDetail } from "src/hooks/announcements/useAnnouncementDetail";
+import {
+  FormBackButtonStyled,
+  FormTitleRowStyled,
+} from "src/styles/customStyledComponent";
 import { globalStyles } from "src/styles/globalStyles";
 import { icon } from "src/utils/style/svgIcon";
 
@@ -39,21 +42,21 @@ const AnnouncementDetail = () => {
 
   return (
     <Box sx={globalStyles.formPageWrapper}>
-      <Box sx={globalStyles.formTitleRow}>
-        <Button
+      <FormTitleRowStyled>
+        <FormBackButtonStyled
           variant="text"
           color="secondary"
           startIcon={icon("arrow-left", 18, 18)}
           onClick={handleBack}
         >
           {t("general.back")}
-        </Button>
+        </FormBackButtonStyled>
         <Typography variant="h4">
           {announcementId
             ? t("announcements.form.editTitle")
             : t("announcements.form.createTitle")}
         </Typography>
-      </Box>
+      </FormTitleRowStyled>
 
       <AnnouncementForm
         announcement={announcement}
