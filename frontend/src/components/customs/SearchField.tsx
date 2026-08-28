@@ -8,9 +8,9 @@ import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
 
 interface SearchFieldProps {
-  searchTerm: string;
-  placeholder: string;
-  onSearch: (value: string) => void;
+  readonly searchTerm: string;
+  readonly placeholder: string;
+  readonly onSearch: (value: string) => void;
 }
 
 const SearchField = ({

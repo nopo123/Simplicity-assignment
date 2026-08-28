@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 
 interface ThemeCssVarsProviderProps {
-  children?: ReactNode;
+  readonly children?: ReactNode;
 }
 
 export const ThemeCssVarsProvider = ({

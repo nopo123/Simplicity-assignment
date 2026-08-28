@@ -1,6 +1,6 @@
 export type AnnouncementFormValues = {
-  title: string;
-  body: string;
-  categoryIds: number[];
-  publicationDate: string;
+  readonly title: string;
+  readonly body: string;
+  readonly categoryIds: number[];
+  readonly publicationDate: string;
 };

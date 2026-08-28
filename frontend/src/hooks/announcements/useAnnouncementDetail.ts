@@ -11,8 +11,8 @@ import {
 } from "src/types/announcement";
 
 interface UseAnnouncementDetailProps {
-  announcementId?: number;
-  onLeave: () => void;
+  readonly announcementId?: number;
+  readonly onLeave: () => void;
 }
 
 export const useAnnouncementDetail = ({

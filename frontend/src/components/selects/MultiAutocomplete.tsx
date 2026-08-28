@@ -14,17 +14,17 @@ import {
 import { CategoryOptionType } from "src/types/category";
 
 interface MultiAutocompleteProps {
-  items: CategoryOptionType[];
-  values: number[];
-  handleChange: (selectedIds: number[]) => void;
-  name: string;
-  ariaLabel: string;
-  placeholder: string;
-  noOptionsText: string;
-  disabled?: boolean;
-  error?: boolean;
-  helperText?: string | false;
-  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+  readonly items: CategoryOptionType[];
+  readonly values: number[];
+  readonly handleChange: (selectedIds: number[]) => void;
+  readonly name: string;
+  readonly ariaLabel: string;
+  readonly placeholder: string;
+  readonly noOptionsText: string;
+  readonly disabled?: boolean;
+  readonly error?: boolean;
+  readonly helperText?: string | false;
+  readonly onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
 }
 
 const MultiAutocomplete = ({

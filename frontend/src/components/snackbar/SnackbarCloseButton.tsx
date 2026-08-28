@@ -5,7 +5,7 @@ import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
 
 interface SnackbarCloseButtonProps {
-  snackbarKey: SnackbarKey;
+  readonly snackbarKey: SnackbarKey;
 }
 
 const SnackbarCloseButton = ({ snackbarKey }: SnackbarCloseButtonProps) => {

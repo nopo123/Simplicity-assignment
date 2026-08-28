@@ -3,8 +3,8 @@ import { SxProps, Theme } from "@mui/system";
 import { DIMENSIONS } from "src/config/config";
 
 interface SvgColorProps {
-  src: string;
-  sx?: SxProps<Theme>;
+  readonly src: string;
+  readonly sx?: SxProps<Theme>;
 }
 
 const SvgColor = ({ src, sx }: SvgColorProps) => (

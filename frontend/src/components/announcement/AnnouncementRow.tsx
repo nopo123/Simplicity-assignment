@@ -14,10 +14,10 @@ import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
 
 interface AnnouncementRowProps {
-  announcement: AnnouncementType;
-  language: string;
-  t: TFunction;
-  onEdit: (announcementId: number) => void;
+  readonly announcement: AnnouncementType;
+  readonly language: string;
+  readonly t: TFunction;
+  readonly onEdit: (announcementId: number) => void;
 }
 
 const AnnouncementRow = ({

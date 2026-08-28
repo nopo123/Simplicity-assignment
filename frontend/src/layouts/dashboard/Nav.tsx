@@ -9,7 +9,7 @@ import {
 } from "src/styles/customStyledComponent";
 
 interface NavProps {
-  onNavigate?: () => void;
+  readonly onNavigate?: () => void;
 }
 
 const Nav = ({ onNavigate }: NavProps) => {

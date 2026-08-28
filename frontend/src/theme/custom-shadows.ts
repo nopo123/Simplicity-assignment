@@ -2,8 +2,8 @@ import { Theme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
 
 export type CustomShadows = {
-  card: string;
-  dropdown: string;
+  readonly card: string;
+  readonly dropdown: string;
 };
 
 export const customShadows = (theme: Theme): CustomShadows => ({

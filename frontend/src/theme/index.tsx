@@ -12,7 +12,7 @@ import { shadows } from "./shadows";
 import { typography } from "./typography";
 
 interface ThemeProviderProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {

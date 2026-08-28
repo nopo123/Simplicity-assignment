@@ -9,9 +9,9 @@ import { cssVar } from "src/utils/style/cssStyle";
 import { icon } from "src/utils/style/svgIcon";
 
 interface NavItemProps {
-  item: NavItemConfig;
-  t: TFunction;
-  onNavigate?: () => void;
+  readonly item: NavItemConfig;
+  readonly t: TFunction;
+  readonly onNavigate?: () => void;
 }
 
 const NavItem = ({ item, t, onNavigate }: NavItemProps) => {

@@ -21,16 +21,16 @@ import {
 } from "src/types/announcement";
 
 interface AnnouncementTableProps {
-  announcements: AnnouncementType[];
-  total: number;
-  page: number;
-  sortBy: ANNOUNCEMENT_SORT_BY;
-  sortOrder: SORT_ORDER;
-  language: string;
-  t: TFunction;
-  onSort: (field: ANNOUNCEMENT_SORT_BY) => void;
-  onChangePage: (page: number) => void;
-  onEdit: (announcementId: number) => void;
+  readonly announcements: AnnouncementType[];
+  readonly total: number;
+  readonly page: number;
+  readonly sortBy: ANNOUNCEMENT_SORT_BY;
+  readonly sortOrder: SORT_ORDER;
+  readonly language: string;
+  readonly t: TFunction;
+  readonly onSort: (field: ANNOUNCEMENT_SORT_BY) => void;
+  readonly onChangePage: (page: number) => void;
+  readonly onEdit: (announcementId: number) => void;
 }
 
 const AnnouncementTable = ({

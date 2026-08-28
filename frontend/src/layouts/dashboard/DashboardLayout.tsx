@@ -9,7 +9,7 @@ import {
 } from "src/styles/customStyledComponent";
 
 interface DashboardLayoutProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {

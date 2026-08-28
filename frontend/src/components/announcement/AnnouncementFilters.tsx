@@ -7,11 +7,11 @@ import { AnnouncementCategoryFilterStyled } from "src/styles/customStyledCompone
 import { globalStyles } from "src/styles/globalStyles";
 
 interface AnnouncementFiltersProps {
-  searchTerm: string;
-  categoryIds: number[];
-  t: TFunction;
-  onSearch: (value: string) => void;
-  onCategoryChange: (selectedIds: number[]) => void;
+  readonly searchTerm: string;
+  readonly categoryIds: number[];
+  readonly t: TFunction;
+  readonly onSearch: (value: string) => void;
+  readonly onCategoryChange: (selectedIds: number[]) => void;
 }
 
 const AnnouncementFilters = ({

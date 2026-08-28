@@ -5,10 +5,10 @@ import { globalStyles } from "src/styles/globalStyles";
 import { getTextFieldStyles } from "src/styles/inputStyles";
 
 type FormikTextFieldCustomProps = {
-  name: string;
-  label?: string;
-  error?: boolean;
-  helperText?: string | false;
+  readonly name: string;
+  readonly label?: string;
+  readonly error?: boolean;
+  readonly helperText?: string | false;
 };
 
 type FormikTextFieldProps = FormikTextFieldCustomProps &

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 interface PageTitleProps {
-  title: string;
+  readonly title: string;
 }
 
 const PageTitle = ({ title }: PageTitleProps) => (

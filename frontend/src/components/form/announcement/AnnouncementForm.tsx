@@ -17,10 +17,10 @@ import { AnnouncementFormValues } from "./types/announcementForm";
 import { mapAnnouncementToFormValues } from "src/components/form/announcement/utils/announcementFormValues";
 
 interface AnnouncementFormProps {
-  announcement?: AnnouncementType;
-  isSaving: boolean;
-  t: TFunction;
-  onSubmit: (values: AnnouncementFormValues) => void;
+  readonly announcement?: AnnouncementType;
+  readonly isSaving: boolean;
+  readonly t: TFunction;
+  readonly onSubmit: (values: AnnouncementFormValues) => void;
 }
 
 const AnnouncementForm = ({
