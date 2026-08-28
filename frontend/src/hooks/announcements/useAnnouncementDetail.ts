@@ -40,7 +40,6 @@ export const useAnnouncementDetail = ({
     mutationFn: (values: CreateAnnouncementType) =>
       announcementApi.createAnnouncement(values),
     onSuccess: async () => {
-      enqueueSnackbar(t("announcements.form.created"), { variant: "success" });
       await invalidateAndLeave();
     },
     onError: () => {

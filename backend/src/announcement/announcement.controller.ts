@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -12,7 +11,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
-import { ANNOUNCEMENT_CLIENT_ID_HEADER } from './announcement.events';
 import { AnnouncementPathParamDto } from './dto/announcement-path-param.dto';
 import { AnnouncementQueryDto } from './dto/announcement-query.dto';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
@@ -62,19 +60,15 @@ export class AnnouncementController {
     GetAnnouncementDto,
     'Create an announcement',
     'Announcement has been created successfully',
-    'Creates an announcement. Title, body, publication date and at least one existing category are all required. On success every websocket client subscribed to the announcements namespace receives an announcementCreated message carrying the new announcement and, as a second argument, the x-client-id header value of the caller so the originating client can skip notifying itself.',
+    'Creates an announcement. Title, body, publication date and at least one existing category are all required. On success every websocket client subscribed to the announcements namespace receives an announcementCreated message carrying the new announcement.',
     'Announcement',
   )
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createAnnouncementDto: CreateAnnouncementDto,
-    @Headers(ANNOUNCEMENT_CLIENT_ID_HEADER) originClientId?: string,
   ): Promise<GetAnnouncementDto> {
-    return this.announcementService.create(
-      createAnnouncementDto,
-      originClientId,
-    );
+    return this.announcementService.create(createAnnouncementDto);
   }
 
   @RestApiResponseObject(

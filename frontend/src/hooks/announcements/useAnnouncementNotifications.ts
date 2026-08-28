@@ -3,7 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
 import { io } from "socket.io-client";
-import { CLIENT_ID } from "src/lib/clientId";
 import { BACKEND_HOST } from "src/lib/lib";
 import { AnnouncementType } from "src/types/announcement";
 
@@ -22,9 +21,7 @@ export const useAnnouncementNotifications = () => {
 
     socket.on(
       ANNOUNCEMENT_CREATED_MESSAGE,
-      (announcement: AnnouncementType, originClientId?: string) => {
-        if (originClientId === CLIENT_ID) return;
-
+      (announcement: AnnouncementType) => {
         enqueueSnackbar(
           t("announcements.notifications.created", {
             title: announcement.title,
