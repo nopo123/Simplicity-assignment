@@ -9,5 +9,3 @@ process.env.DATABASE_NAME =
 process.env.DATABASE_ENABLE_LOGGING = 'false';
 process.env.DATABASE_MIGRATION_NAME =
   process.env.DATABASE_MIGRATION_NAME || 'migration';
-process.env.CORS_ALLOWED_ORIGINS =
-  process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3001';

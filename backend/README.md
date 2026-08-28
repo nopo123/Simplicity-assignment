@@ -5,6 +5,7 @@ NestJS + TypeORM + PostgreSQL REST API for managing city announcements.
 - URL versioning is enabled, so every route is prefixed with `/v1`
 - Swagger UI on http://localhost:3000/swagger, and `swagger-spec.yaml` is rewritten on every boot
 - No authentication — every endpoint is public, which keeps the assignment focused on the announcements domain
+- CORS is open for the same reason: there are no cookies and no credentials to protect, so the API needs no origin allow list and no port-specific configuration
 
 ## Running the project
 
@@ -47,7 +48,6 @@ The API listens on http://localhost:3000.
 |---|---|---|
 | `APP_ENV` | `dev` | `dev` enables SQL logging when `DATABASE_ENABLE_LOGGING` is also true |
 | `PORT` | `3000` | HTTP port |
-| `CORS_ALLOWED_ORIGINS` | `http://localhost:3001` | Comma-separated allow list, also applied to the websocket namespace. Startup fails if unset |
 | `DATABASE_HOST` | `localhost` | `postgres_db` inside the Docker network |
 | `DATABASE_PORT` | `5432` | Host port of the `postgres_db` service. Change it here **and** in the root `.env` if 5432 is already taken on your machine — the compose files read the same variable |
 | `DATABASE_PORT_TEST` | `5433` | Host port of the `test_db` service, used by the e2e tests |

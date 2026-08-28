@@ -43,15 +43,7 @@ export const securityHardeningHelper = (app: NestExpressApplication) => {
 };
 
 export const corsHelper = (app: NestExpressApplication) => {
-  const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS;
-  if (!allowedOrigins) {
-    throw new Error('CORS_ALLOWED_ORIGINS environment variable is not set');
-  }
-
-  app.enableCors({
-    origin: allowedOrigins.split(',').map((origin) => origin.trim()),
-    credentials: true,
-  });
+  app.enableCors();
 
   return app;
 };
