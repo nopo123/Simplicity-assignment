@@ -4,6 +4,7 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import { BORDER, commonStyles } from "./globalStyles";
 import { DIMENSIONS, MEDIA_DOWN_MD } from "src/config/config";
 import { cssVar } from "src/utils/style/cssStyle";
@@ -148,4 +149,9 @@ export const FormBackButtonStyled = styled(Button)({
     marginRight: 0,
     marginLeft: "-12px",
   },
+});
+
+export const TruncatedTextStyled = styled(Typography)({
+  ...commonStyles.textOverflowEllipsis,
+  display: "block",
 });

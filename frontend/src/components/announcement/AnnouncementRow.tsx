@@ -4,6 +4,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import TruncatedText from "src/components/customs/TruncatedText";
 import { TFunction } from "i18next";
 import { globalStyles } from "src/styles/globalStyles";
 import { AnnouncementType } from "src/types/announcement";
@@ -42,7 +43,7 @@ const AnnouncementRow = ({
   return (
     <TableRow hover>
       <TableCell sx={globalStyles.bodyCellFirst}>
-        <Typography variant="body2">{announcement.title}</Typography>
+        <TruncatedText text={announcement.title} />
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
         <Typography variant="body2">
@@ -55,7 +56,7 @@ const AnnouncementRow = ({
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
-        <Typography variant="body2">{categoryLabels}</Typography>
+        <TruncatedText text={categoryLabels} />
       </TableCell>
       <TableCell sx={globalStyles.actionCell}>
         <Tooltip title={t("announcements.table.edit")}>
