@@ -125,8 +125,29 @@ is actually wrong:
 | `01/15/2026 10:60` | Minutes must be between 00 and 59 |
 
 Each message is an i18n key with interpolated bounds, so the limits are never hardcoded into a
-sentence. `created` and `updated` stay ISO 8601 and are formatted for display with
-`formatPublicationDate`.
+sentence.
+
+### Wire format versus display format
+
+`MM/DD/YYYY HH:mm` is what the form edits, validates and sends. The **table** shows something else:
+the design spells the month out, so `formatPublicationDate` and `formatLastUpdate` in
+[src/utils/date/dateFormat.ts](src/utils/date/dateFormat.ts) render through the built-in
+`Intl.DateTimeFormat` instead.
+
+| Column | Source | Shown as |
+|---|---|---|
+| Publication date | `MM/DD/YYYY HH:mm`, UTC | `Aug 11, 2023 04:38` |
+| Last update | `updated`, ISO 8601 | `Aug 11, 2023` |
+
+Two formatters are composed rather than one, because a single `Intl` call puts a comma between the
+date and the time (`Aug 11, 2023, 04:38`) and the design has none. Both are pinned to `en-US` and to
+`UTC`: the locale so the column does not change shape with the interface language, and the time zone
+so the two columns can never disagree about which day something happened — publication dates are
+UTC by contract, and a viewer east of Greenwich would otherwise see a local `updated` day that does
+not line up with them.
+
+The formatters are built once at module level; constructing an `Intl.DateTimeFormat` per row is the
+expensive part, formatting with it is not.
 
 ## Search debouncing
 

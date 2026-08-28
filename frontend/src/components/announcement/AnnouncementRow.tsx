@@ -8,7 +8,10 @@ import { TFunction } from "i18next";
 import { globalStyles } from "src/styles/globalStyles";
 import { AnnouncementType } from "src/types/announcement";
 import { resolveCategoryLabels } from "src/utils/category/categoryLabel";
-import { formatPublicationDate } from "src/utils/date/dateFormat";
+import {
+  formatLastUpdate,
+  formatPublicationDate,
+} from "src/utils/date/dateFormat";
 import { cssVar } from "src/utils/style/cssStyle";
 import { DIMENSIONS } from "src/config/config";
 import { icon } from "src/utils/style/svgIcon";
@@ -43,12 +46,12 @@ const AnnouncementRow = ({
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
         <Typography variant="body2">
-          {announcement.publicationDate}
+          {formatPublicationDate(announcement.publicationDate)}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
         <Typography variant="body2">
-          {formatPublicationDate(announcement.updated)}
+          {formatLastUpdate(announcement.updated)}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
