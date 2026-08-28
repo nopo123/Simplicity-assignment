@@ -222,10 +222,16 @@ socket.on('announcementCreated', (announcement) => console.log(announcement.titl
 **Swagger** — http://localhost:3000/swagger lists every endpoint with request and response schemas
 and lets you fire requests directly.
 
-**Postman** — import [`docs/postman/Announcements.postman_collection.json`](../docs/postman/Announcements.postman_collection.json).
-The collection has a `baseUrl` variable (default `http://localhost:3000`) and stores the id of the
-created announcement into `announcementId`, so the requests can be run top to bottom as a flow:
-create → list → search → filter → get → patch → delete.
+**Postman** — import [`docs/postman/Announcements.postman_collection.json`](../docs/postman/Announcements.postman_collection.json),
+then **Run collection** or send the 17 requests top to bottom. They form one flow: create → list →
+search → filter → get → patch → delete, with the rejected requests that show each validation rule
+in between. Ids travel between requests through collection variables, so nothing has to be pasted by
+hand, and both announcements the run creates are deleted again at the end — a second run starts from
+the same data as the first.
+
+Set `baseUrl` (default `http://localhost:3000`) if you changed `BACKEND_PORT`. Every request carries
+a description explaining what it demonstrates, and the ones with assertions report pass or fail in
+the Postman test tab.
 
 ## Automated tests
 

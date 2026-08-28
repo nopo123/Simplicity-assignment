@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Announcements API",
-    "description": "Announcements assignment API. Run the requests top to bottom — Create stores the new id into the announcementId variable, which the later requests reuse.",
+    "description": "Announcements assignment API. Run the requests top to bottom \u2014 Create stores the new id into the announcementId variable, which the later requests reuse.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -19,6 +19,11 @@
       "key": "categoryId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "accentedAnnouncementId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -29,8 +34,13 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/health",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "health"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "health"
+          ]
         },
         "description": "Liveness probe. Returns ok when the database answers."
       }
@@ -61,8 +71,13 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/categories",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "categories"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "categories"
+          ]
         },
         "description": "Fixed reference data, ordered for selectors. Stores the first id into categoryId."
       }
@@ -96,8 +111,13 @@
         },
         "url": {
           "raw": "{{baseUrl}}/v1/announcements",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ]
         },
         "description": "publicationDate uses the MM/DD/YYYY HH:mm format and is interpreted as UTC. Broadcasts announcementCreated over the websocket on success."
       }
@@ -129,8 +149,13 @@
         },
         "url": {
           "raw": "{{baseUrl}}/v1/announcements",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ]
         },
         "description": "Shows the error envelope: statusCode, message, timestamp."
       }
@@ -165,10 +190,96 @@
         },
         "url": {
           "raw": "{{baseUrl}}/v1/announcements",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ]
         },
         "description": "The date is validated part by part, so the message names the offending part instead of a generic invalid date. Try 01/32/2026 10:00, 02/29/2001 10:00, 01/15/2026 24:00 and 01/15/2026 10:60 as well."
+      }
+    },
+    {
+      "name": "Create announcement - blank title",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('a title of only whitespace is rejected', () => {",
+              "  pm.response.to.have.status(400);",
+              "  pm.expect(pm.response.json().message).to.contain('title');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"   \",\n  \"body\": \"The title is only spaces\",\n  \"publicationDate\": \"08/28/2026 08:55\",\n  \"categoryIds\": [{{categoryId}}]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ]
+        },
+        "description": "title and body are trimmed before validation, so a value made only of whitespace counts as empty rather than as a 3 character title."
+      }
+    },
+    {
+      "name": "Create announcement - accented title",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('created', () => pm.response.to.have.status(201));",
+              "",
+              "pm.collectionVariables.set('accentedAnnouncementId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Odst\u00e1vka vody v Ko\u0161iciach\",\n  \"body\": \"Voda bude odstaven\u00e1 od 8:00 do 14:00\",\n  \"publicationDate\": \"09/01/2026 08:00\",\n  \"categoryIds\": [{{categoryId}}]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ]
+        },
+        "description": "Seed data is English, so the diacritics search below needs an accented announcement of its own. Deleted again at the end of the run."
       }
     },
     {
@@ -178,11 +289,22 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements?page=1&limit=10",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ],
           "query": [
-            { "key": "page", "value": "1" },
-            { "key": "limit", "value": "10" }
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
           ]
         },
         "description": "Default order is last update descending, so the announcement created above comes first."
@@ -195,11 +317,59 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements?search=storm",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"],
-          "query": [{ "key": "search", "value": "storm" }]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ],
+          "query": [
+            {
+              "key": "search",
+              "value": "storm"
+            }
+          ]
         },
         "description": "Case-insensitive match against the title or the body."
+      }
+    },
+    {
+      "name": "List announcements - search ignoring diacritics",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('an unaccented term matches accented content', () => {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json().total).to.be.above(0);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements?search=kosiciach",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ],
+          "query": [
+            {
+              "key": "search",
+              "value": "kosiciach"
+            }
+          ]
+        },
+        "description": "The term carries no diacritics and the content does; both sides go through unaccent(), so it matches either way round. Try search=Ko\u0161iciach for the reverse direction."
       }
     },
     {
@@ -209,9 +379,19 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements?categoryIds={{categoryId}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"],
-          "query": [{ "key": "categoryIds", "value": "{{categoryId}}" }]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ],
+          "query": [
+            {
+              "key": "categoryIds",
+              "value": "{{categoryId}}"
+            }
+          ]
         },
         "description": "Accepts a repeated parameter or one comma-separated value. Matched announcements still return their full category list."
       }
@@ -223,11 +403,22 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements?sortBy=PUBLICATION_DATE&sortOrder=ASC",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements"],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements"
+          ],
           "query": [
-            { "key": "sortBy", "value": "PUBLICATION_DATE" },
-            { "key": "sortOrder", "value": "ASC" }
+            {
+              "key": "sortBy",
+              "value": "PUBLICATION_DATE"
+            },
+            {
+              "key": "sortOrder",
+              "value": "ASC"
+            }
           ]
         }
       }
@@ -239,8 +430,14 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements", "{{announcementId}}"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements",
+            "{{announcementId}}"
+          ]
         },
         "description": "What the edit form loads to prefill its fields."
       }
@@ -261,8 +458,14 @@
         },
         "url": {
           "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements", "{{announcementId}}"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements",
+            "{{announcementId}}"
+          ]
         },
         "description": "Only the supplied fields change. categoryIds would replace the whole set. Any update moves the last-update timestamp forward."
       }
@@ -285,9 +488,45 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements", "{{announcementId}}"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements",
+            "{{announcementId}}"
+          ]
         }
+      }
+    },
+    {
+      "name": "Delete accented announcement",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('cleaned up', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements/{{accentedAnnouncementId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements",
+            "{{accentedAnnouncementId}}"
+          ]
+        },
+        "description": "Keeps the collection re-runnable: a second run starts from the same data as the first."
       }
     },
     {
@@ -308,8 +547,14 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "announcements", "{{announcementId}}"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "announcements",
+            "{{announcementId}}"
+          ]
         }
       }
     }
