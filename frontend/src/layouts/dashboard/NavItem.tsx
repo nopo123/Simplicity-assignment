@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { TFunction } from "i18next";
 import { NavItemConfig } from "./config-navigation";
 import { NavItemStyled } from "src/styles/customStyledComponent";
+import { cssVar } from "src/utils/style/cssStyle";
 import { icon } from "src/utils/style/svgIcon";
 
 interface NavItemProps {
@@ -24,10 +25,15 @@ const NavItem = ({ item, t }: NavItemProps) => {
 
   return (
     <NavItemStyled selected={isSelected} onClick={handleClick}>
-      {icon(item.iconName)}
+      {icon(
+        item.iconName,
+        22,
+        22,
+        isSelected ? cssVar("primary-darker") : cssVar("text-secondary"),
+      )}
       <ListItemText
         primary={t(item.labelKey)}
-        primaryTypographyProps={{ variant: "body2" }}
+        primaryTypographyProps={{ variant: "body1" }}
       />
     </NavItemStyled>
   );

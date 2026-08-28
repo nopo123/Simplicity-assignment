@@ -66,8 +66,15 @@ const AnnouncementTable = ({
         <Table sx={globalStyles.tableContainer}>
           <TableHead>
             <TableRow>
-              {columns.map((column) => (
-                <TableCell key={column.key} sx={globalStyles.headerCell}>
+              {columns.map((column, columnIndex) => (
+                <TableCell
+                  key={column.key}
+                  sx={
+                    columnIndex === 0
+                      ? globalStyles.headerCellFirst
+                      : globalStyles.headerCell
+                  }
+                >
                   {column.sortBy ? (
                     <TableSortLabel
                       active={sortBy === column.sortBy}

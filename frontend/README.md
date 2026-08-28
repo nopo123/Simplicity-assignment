@@ -26,6 +26,17 @@ The app runs on http://localhost:3001.
 | `/announcements/new` | Empty form for a new announcement |
 | `/announcements/:id` | The same form, prefilled from the announcement |
 
+## Layout notes from the design
+
+The active sidebar item is not a small pill — it fills the remaining height of the sidebar and
+carries an **elliptical** right-hand radius (`0 100% 100% 0 / 0 32% 32% 0`), which is what produces
+the large amber shape in the design. A plain `border-radius: 999px` would give a straight edge with
+a semicircular cap instead of the continuous curve.
+
+The table keeps every text dark — header labels included — and renders categories as a plain
+comma-separated list rather than chips. Chips appear only in the category multiselect, which is
+where the design shows them.
+
 ## Theme
 
 The amber palette lives in [src/theme/palette/palette-default.ts](src/theme/palette/palette-default.ts)

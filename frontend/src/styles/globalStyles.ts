@@ -77,19 +77,30 @@ export const globalStyles = {
   },
   headerCell: {
     height: "52px",
-    padding: "6px 16px",
+    padding: "6px 24px",
+    whiteSpace: "nowrap",
+  },
+  headerCellFirst: {
+    height: "52px",
+    padding: "6px 24px 6px 48px",
     whiteSpace: "nowrap",
   },
   bodyCell: {
-    height: "56px",
-    padding: "6px 16px",
+    height: "48px",
+    padding: "6px 24px",
     ...commonStyles.textOverflowEllipsis,
-    maxWidth: "320px",
+    maxWidth: "360px",
+  },
+  bodyCellFirst: {
+    height: "48px",
+    padding: "6px 24px 6px 48px",
+    ...commonStyles.textOverflowEllipsis,
+    maxWidth: "360px",
   },
   actionCell: {
-    height: "56px",
-    padding: "6px 16px",
-    width: "64px",
+    height: "48px",
+    padding: "6px 24px",
+    width: "72px",
     textAlign: "right",
   },
   pagination: {

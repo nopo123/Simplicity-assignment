@@ -21,48 +21,48 @@ export const DashboardContentStyled = styled("main")({
 
 export const NavRootStyled = styled("nav")({
   ...commonStyles.flexColumn,
-  ...commonStyles.gap8px,
   ...commonStyles.bgGrey100,
+  ...commonStyles.overflowHidden,
   width: `${DIMENSIONS.NAV_WIDTH}px`,
   flexShrink: 0,
   borderRight: `1px solid ${cssVar("grey-200")}`,
-  paddingTop: "16px",
-  paddingBottom: "16px",
+  paddingTop: "20px",
 });
 
 export const NavBrandStyled = styled(Box)({
   ...commonStyles.flexCenter,
-  ...commonStyles.gap8px,
-  padding: "8px 16px 16px 20px",
+  ...commonStyles.gap12px,
+  padding: "0 20px 28px 20px",
 });
 
 export const NavBrandAvatarStyled = styled(Box)({
   ...commonStyles.flexCenterCenter,
   ...commonStyles.borderRadius50,
-  width: "24px",
-  height: "24px",
+  width: "34px",
+  height: "34px",
   flexShrink: 0,
   backgroundColor: cssVar("primary-main"),
   color: cssVar("primary-contrastText"),
-  fontSize: "12px",
-  fontWeight: 900,
+  fontSize: "15px",
+  fontWeight: 700,
 });
 
 export const NavItemStyled = styled(ListItemButton)({
   ...commonStyles.gap12px,
-  minHeight: "44px",
+  flexGrow: 0,
+  minHeight: "48px",
   marginRight: "12px",
   paddingLeft: "20px",
-  borderTopRightRadius: "999px",
-  borderBottomRightRadius: "999px",
   color: cssVar("text-secondary"),
+  borderRadius: "0 100% 100% 0 / 0 50% 50% 0",
   "&:hover": {
     backgroundColor: cssVar("primary-lighter"),
   },
   "&.Mui-selected": {
+    flexGrow: 1,
     backgroundColor: cssVar("primary-light"),
-    color: cssVar("primary-darker"),
-    fontWeight: 700,
+    color: cssVar("text-primary"),
+    borderRadius: "0 100% 100% 0 / 0 32% 32% 0",
   },
   "&.Mui-selected:hover": {
     backgroundColor: cssVar("primary-light"),

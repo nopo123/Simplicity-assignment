@@ -100,7 +100,7 @@ export function overrides(theme: Theme) {
           borderBottom: `1px solid ${theme.palette.grey[200]}`,
         },
         head: {
-          color: theme.palette.text.secondary,
+          color: theme.palette.text.primary,
           fontWeight: 700,
           backgroundColor: theme.palette.common.white,
         },
@@ -109,7 +109,10 @@ export function overrides(theme: Theme) {
     MuiTableSortLabel: {
       styleOverrides: {
         root: {
-          color: theme.palette.text.secondary,
+          color: theme.palette.text.primary,
+          "&:hover": {
+            color: theme.palette.text.primary,
+          },
           "&.Mui-active": {
             color: theme.palette.text.primary,
           },

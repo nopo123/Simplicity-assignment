@@ -1,13 +1,11 @@
 import { useCallback } from "react";
-import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { TFunction } from "i18next";
-import { CategoryChipStyled } from "src/styles/customStyledComponent";
-import { commonStyles, globalStyles } from "src/styles/globalStyles";
+import { globalStyles } from "src/styles/globalStyles";
 import { AnnouncementType } from "src/types/announcement";
 import { resolveCategoryLabels } from "src/utils/category/categoryLabel";
 import { formatPublicationDate } from "src/utils/date/dateFormat";
@@ -30,7 +28,7 @@ const AnnouncementRow = ({
   const categoryLabels = resolveCategoryLabels(
     announcement.categories,
     language,
-  );
+  ).join(",");
 
   const handleEdit = useCallback(
     () => onEdit(announcement.id),
@@ -39,31 +37,21 @@ const AnnouncementRow = ({
 
   return (
     <TableRow hover>
-      <TableCell sx={globalStyles.bodyCell}>
+      <TableCell sx={globalStyles.bodyCellFirst}>
         <Typography variant="body2">{announcement.title}</Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2">
           {formatPublicationDate(announcement.publicationDate)}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2">
           {formatPublicationDate(announcement.updated)}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
-        <Box
-          sx={{
-            ...commonStyles.flexCenter,
-            ...commonStyles.gap4px,
-            ...commonStyles.flexWrap,
-          }}
-        >
-          {categoryLabels.map((label) => (
-            <CategoryChipStyled key={label} label={label} size="small" />
-          ))}
-        </Box>
+        <Typography variant="body2">{categoryLabels}</Typography>
       </TableCell>
       <TableCell sx={globalStyles.actionCell}>
         <Tooltip title={t("announcements.table.edit")}>
@@ -72,7 +60,7 @@ const AnnouncementRow = ({
             size="small"
             onClick={handleEdit}
           >
-            {icon("edit", 18, 18, cssVar("text-secondary"))}
+            {icon("edit", 18, 18, cssVar("text-primary"))}
           </IconButton>
         </Tooltip>
       </TableCell>
