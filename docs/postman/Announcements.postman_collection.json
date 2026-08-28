@@ -92,14 +92,14 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Storm warning for the weekend\",\n  \"body\": \"A strong storm front is expected on Saturday evening. Secure loose objects on balconies.\",\n  \"publicationDate\": \"2026-08-28T08:55:00.000Z\",\n  \"categoryIds\": [{{categoryId}}]\n}"
+          "raw": "{\n  \"title\": \"Storm warning for the weekend\",\n  \"body\": \"A strong storm front is expected on Saturday evening. Secure loose objects on balconies.\",\n  \"publicationDate\": \"08/28/2026 08:55\",\n  \"categoryIds\": [{{categoryId}}]\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/v1/announcements",
           "host": ["{{baseUrl}}"],
           "path": ["v1", "announcements"]
         },
-        "description": "publicationDate is ISO 8601 on the wire. Broadcasts announcementCreated over the websocket on success."
+        "description": "publicationDate uses the MM/DD/YYYY HH:mm format and is interpreted as UTC. Broadcasts announcementCreated over the websocket on success."
       }
     },
     {
@@ -133,6 +133,42 @@
           "path": ["v1", "announcements"]
         },
         "description": "Shows the error envelope: statusCode, message, timestamp."
+      }
+    },
+    {
+      "name": "Create announcement - bad publication date",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('says which part of the date is wrong', () => {",
+              "  pm.response.to.have.status(400);",
+              "  pm.expect(pm.response.json().message).to.contain('month');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Bad date\",\n  \"body\": \"Month 13 does not exist\",\n  \"publicationDate\": \"13/31/2001 21:11\",\n  \"categoryIds\": [{{categoryId}}]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"]
+        },
+        "description": "The date is validated part by part, so the message names the offending part instead of a generic invalid date. Try 01/32/2026 10:00, 02/29/2001 10:00, 01/15/2026 24:00 and 01/15/2026 10:60 as well."
       }
     },
     {

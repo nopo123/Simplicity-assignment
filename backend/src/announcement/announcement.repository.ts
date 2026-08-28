@@ -15,6 +15,9 @@ const ANNOUNCEMENT_SORT_COLUMNS: Record<ANNOUNCEMENT_SORT_BY, string> = {
 const CATEGORY_FILTER_SUBQUERY =
   'announcement.id IN (SELECT announcement_category."announcementId" FROM announcement_category WHERE announcement_category."categoryId" IN (:...categoryIds))';
 
+const TOUCH_UPDATED_QUERY =
+  'UPDATE announcement SET updated = CURRENT_TIMESTAMP WHERE id = $1 RETURNING updated';
+
 @Injectable()
 export class AnnouncementRepository extends Repository<AnnouncementEntity> {
   constructor(
@@ -69,6 +72,17 @@ export class AnnouncementRepository extends Repository<AnnouncementEntity> {
       where: { id: announcementId },
       relations: { categories: true },
     });
+  }
+
+  public async touchUpdatedWithEntityManager(
+    entityManager: EntityManager,
+    announcementId: number,
+  ): Promise<Date> {
+    const rows = await entityManager.query(TOUCH_UPDATED_QUERY, [
+      announcementId,
+    ]);
+
+    return rows[0].updated;
   }
 
   public async findOneWithCategoriesWithEntityManager(

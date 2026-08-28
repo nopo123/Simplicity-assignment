@@ -64,17 +64,42 @@ yellow warning would be indistinguishable from a call to action.
 
 The font is **Lato**, loaded from Google Fonts in [index.html](index.html).
 
-## Publication date format
+## Publication date
 
 `MM/DD/YYYY HH:mm` is written exactly once, in
-[src/config/date.config.ts](src/config/date.config.ts). Everything else derives from it — the input
-placeholder, the strict dayjs parse in the Yup test, the interpolated error message, both date
-columns of the table, and the conversion to ISO 8601 on submit. Grepping the source for the literal
-must return that one file:
+[src/config/date.config.ts](src/config/date.config.ts). Grepping the source for the literal must
+return that one file:
 
 ```bash
 grep -rn "MM/DD/YYYY" src
 ```
+
+It is also the **wire format**, so the form sends the string the user typed without converting it.
+That is what makes frontend and backend validation genuinely identical rather than merely similar:
+both run the same algorithm over the same string.
+
+[src/utils/date/publicationDateValidation.ts](src/utils/date/publicationDateValidation.ts) is a
+**mirror** of `backend/src/common/utils/publication-date.util.ts` — same pattern, same range
+constants, same check order, same error codes. The two files must stay identical; the backend unit
+test `test/common/publication-date-test.validation.unit.spec.ts` pins the behaviour both sides
+implement.
+
+The validator returns a specific error rather than a single "invalid date", so the field says what
+is actually wrong:
+
+| Input | Message |
+|---|---|
+| `` (empty) | Publication date is required |
+| `8/28/2026 08:55` | Use the format MM/DD/YYYY HH:mm |
+| `13/31/2001 21:11` | Month must be between 01 and 12 |
+| `01/32/2026 10:00` | Day must be between 01 and 31 |
+| `02/29/2001 10:00` | That month only has 28 days |
+| `01/15/2026 24:00` | Hours must be between 00 and 23 |
+| `01/15/2026 10:60` | Minutes must be between 00 and 59 |
+
+Each message is an i18n key with interpolated bounds, so the limits are never hardcoded into a
+sentence. `created` and `updated` stay ISO 8601 and are formatted for display with
+`formatPublicationDate`.
 
 ## Search debouncing
 

@@ -25,7 +25,7 @@ describe('AnnouncementController (e2e)', () => {
     ({
       title: 'Water supply interruption in the city centre',
       body: 'Water will be shut off on Main Street between 8:00 and 14:00',
-      publicationDate: '2026-08-28T08:55:00.000Z',
+      publicationDate: '08/28/2026 08:55',
       categoryIds: [categoryIdByCode(CATEGORY_CODE.CITY)],
       ...overrides,
     }) as CreateAnnouncementDto;
@@ -88,7 +88,7 @@ describe('AnnouncementController (e2e)', () => {
       expect(response.body.title).toBe(
         'Water supply interruption in the city centre',
       );
-      expect(response.body.publicationDate).toBe('2026-08-28T08:55:00.000Z');
+      expect(response.body.publicationDate).toBe('08/28/2026 08:55');
       expect(
         response.body.categories.map((category) => category.id).sort(),
       ).toEqual([cityId, healthId].sort());
@@ -134,11 +134,31 @@ describe('AnnouncementController (e2e)', () => {
       expect(response.body.message).toContain('999999');
     });
 
-    it('rejects a publication date that is not ISO 8601', async () => {
+    it('rejects an iso publication date, the wire format is the display format', async () => {
       await createAnnouncement(
-        buildCreateDto({ publicationDate: '08/28/2026 08:55' }),
+        buildCreateDto({ publicationDate: '2026-08-28T08:55:00.000Z' }),
       ).expect(HttpStatus.BAD_REQUEST);
     });
+
+    it.each([
+      ['a malformed value', '8/28/2026 08:55', 'format'],
+      ['a month out of range', '13/28/2026 08:55', 'month'],
+      ['a day out of range', '01/32/2026 08:55', 'day'],
+      ['a day missing from that month', '02/29/2001 08:55', 'does not exist'],
+      ['hours out of range', '01/15/2026 24:00', 'hours'],
+      ['minutes out of range', '01/15/2026 10:60', 'minutes'],
+    ])(
+      'rejects %s and says which part is wrong',
+      async (_scenario, publicationDate, expectedMessagePart) => {
+        const response = await createAnnouncement(
+          buildCreateDto({ publicationDate }),
+        ).expect(HttpStatus.BAD_REQUEST);
+
+        expect(response.body.message.toLowerCase()).toContain(
+          expectedMessagePart,
+        );
+      },
+    );
 
     it('rejects a title over the maximum length', async () => {
       await createAnnouncement(
@@ -177,10 +197,10 @@ describe('AnnouncementController (e2e)', () => {
 
     it('sorts by publication date when asked', async () => {
       const olderId = await createAndExpectId(
-        buildCreateDto({ publicationDate: '2026-01-01T00:00:00.000Z' }),
+        buildCreateDto({ publicationDate: '01/01/2026 00:00' }),
       );
       const newerId = await createAndExpectId(
-        buildCreateDto({ publicationDate: '2026-12-31T00:00:00.000Z' }),
+        buildCreateDto({ publicationDate: '12/31/2026 00:00' }),
       );
 
       const response = await listAnnouncements(
@@ -458,7 +478,7 @@ describe('AnnouncementController (e2e)', () => {
 
       await patchAnnouncement(announcementId, {
         body: 'Rewritten body',
-        publicationDate: '2027-01-15T10:30:00.000Z',
+        publicationDate: '01/15/2027 10:30',
       } as UpdateAnnouncementDto).expect(HttpStatus.OK);
 
       const response = await request(server)
@@ -466,7 +486,7 @@ describe('AnnouncementController (e2e)', () => {
         .expect(HttpStatus.OK);
 
       expect(response.body.body).toBe('Rewritten body');
-      expect(response.body.publicationDate).toBe('2027-01-15T10:30:00.000Z');
+      expect(response.body.publicationDate).toBe('01/15/2027 10:30');
     });
 
     it('rejects an empty category list', async () => {

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DataSource, EntityManager } from 'typeorm';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
 import { AnnouncementRepository } from './announcement.repository';
 import { AnnouncementValidationService } from './announcement.validation.service';
 import { ANNOUNCEMENT_CREATED_EVENT } from './announcement.events';
@@ -16,6 +18,10 @@ import { ANNOUNCEMENT_SORT_BY } from './enums/announcement.enum';
 import { SORT_ORDER } from 'src/common/enums/sort-order.enum';
 import { mapAnnouncementEntityToDto } from './mappers/announcement.mapper';
 import { CategoryEntity } from 'src/category/entities/category.entity';
+import { PUBLICATION_DATE_FORMAT } from 'src/common/utils/publication-date.util';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 @Injectable()
 export class AnnouncementService {
@@ -70,7 +76,13 @@ export class AnnouncementService {
     const announcement = this.announcementRepository.create({
       title: createAnnouncementDto.title,
       body: createAnnouncementDto.body,
-      publicationDate: dayjs(createAnnouncementDto.publicationDate).toDate(),
+      publicationDate: dayjs
+        .utc(
+          createAnnouncementDto.publicationDate,
+          PUBLICATION_DATE_FORMAT,
+          true,
+        )
+        .toDate(),
       categories,
     });
     const savedAnnouncement =
@@ -134,29 +146,23 @@ export class AnnouncementService {
       title: updateAnnouncementDto.title ?? announcement.title,
       body: updateAnnouncementDto.body ?? announcement.body,
       publicationDate: updateAnnouncementDto.publicationDate
-        ? dayjs(updateAnnouncementDto.publicationDate).toDate()
+        ? dayjs
+            .utc(
+              updateAnnouncementDto.publicationDate,
+              PUBLICATION_DATE_FORMAT,
+              true,
+            )
+            .toDate()
         : announcement.publicationDate,
       categories: categories ?? announcement.categories,
     });
     await announcementRepository.save(announcementToSave);
 
-    const updated = await this.touchUpdatedTimestampWithManager(
+    const updated = await this.announcementRepository.touchUpdatedWithEntityManager(
       entityManager,
       announcement.id,
     );
 
     return announcementRepository.create({ ...announcementToSave, updated });
-  }
-
-  private async touchUpdatedTimestampWithManager(
-    entityManager: EntityManager,
-    announcementId: number,
-  ): Promise<Date> {
-    const rows = await entityManager.query(
-      'UPDATE announcement SET updated = CURRENT_TIMESTAMP WHERE id = $1 RETURNING updated',
-      [announcementId],
-    );
-
-    return rows[0].updated;
   }
 }

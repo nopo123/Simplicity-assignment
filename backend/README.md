@@ -77,7 +77,7 @@ migration, so there is no write endpoint for them.
 
 `updated` is the *Last update* column of the announcements table and the default sort key of the
 list endpoint. An update that changes only the categories still moves it forward, because the
-service touches the timestamp explicitly rather than relying on TypeORM's change detection (a
+repository touches the timestamp explicitly rather than relying on TypeORM's change detection (a
 junction-table-only change produces no `UPDATE` on the announcement row).
 
 ## Endpoints
@@ -117,7 +117,7 @@ curl "http://localhost:3000/v1/announcements?search=water&categoryIds=1,6&page=1
       "id": 1,
       "title": "Water supply interruption in the city centre",
       "body": "Water will be shut off on Main Street between 8:00 and 14:00",
-      "publicationDate": "2026-08-11T04:38:00.000Z",
+      "publicationDate": "08/11/2026 04:38",
       "categories": [
         { "id": 1, "code": "CITY", "labels": { "en": "City", "sk": "Mesto" }, "orderingNumber": 1 }
       ],
@@ -133,9 +133,10 @@ curl "http://localhost:3000/v1/announcements?search=water&categoryIds=1,6&page=1
 
 ### `POST /v1/announcements`
 
-`publicationDate` is **ISO 8601** on the wire. The frontend collects it as `MM/DD/YYYY HH:mm` in a
-text input and converts before sending, which is why the API itself does not accept that display
-format.
+`publicationDate` is `MM/DD/YYYY HH:mm` on the wire, interpreted as UTC, and comes back in the same
+format. That is deliberate: the frontend validates exactly the string it sends, so the two sides
+cannot disagree about what a valid date is. `created` and `updated` stay ISO 8601 — they are server
+timestamps, not a value a user typed.
 
 ```bash
 curl -X POST http://localhost:3000/v1/announcements \
@@ -143,13 +144,35 @@ curl -X POST http://localhost:3000/v1/announcements \
   -d '{
     "title": "Storm warning for the weekend",
     "body": "A strong storm front is expected on Saturday evening",
-    "publicationDate": "2026-08-28T08:55:00.000Z",
+    "publicationDate": "08/28/2026 08:55",
     "categoryIds": [1, 6]
   }'
 ```
 
 Every field is required and at least one existing category id must be supplied. Unknown properties
-are rejected. Errors come back in a single shape:
+are rejected.
+
+The publication date is validated part by part rather than as a whole, so the response says which
+part is wrong. The rules live in
+[`src/common/utils/publication-date.util.ts`](src/common/utils/publication-date.util.ts) and the
+frontend keeps a mirror of that file in `frontend/src/utils/date/publicationDateValidation.ts` — same
+checks, same order, same outcome. `test/common/publication-date-test.validation.unit.spec.ts` pins
+every case, including a test that the regex still accepts a value produced by the format constant so
+the two cannot drift apart.
+
+| Input | Reported as |
+|---|---|
+| `` (empty) | `publicationDate should not be empty` |
+| `8/28/2026 08:55`, `2026-08-28T08:55:00Z`, `08-28-2026 08:55` | `publicationDate must use the format MM/DD/YYYY HH:mm` |
+| `13/31/2001 21:11` | `publicationDate month must be between 01 and 12` |
+| `01/32/2026 10:00` | `publicationDate day must be between 01 and 31` |
+| `02/29/2001 10:00` | `publicationDate day does not exist in that month, it has 28 days` |
+| `04/31/2026 10:00` | `publicationDate day does not exist in that month, it has 30 days` |
+| `01/15/2026 24:00` | `publicationDate hours must be between 00 and 23` |
+| `01/15/2026 10:60` | `publicationDate minutes must be between 00 and 59` |
+
+When several parts are wrong the leftmost one is reported, so a value is fixed reading left to
+right. Errors come back in a single shape:
 
 ```json
 {
@@ -207,6 +230,9 @@ Coverage:
 - `test/announcement/announcement-websocket.e2e-spec.ts` — a subscribed client receives
   `announcementCreated`, and a rejected create broadcasts nothing
 - `test/category/category.e2e-spec.ts` — the seeded set, its ordering, and the response shape
+- `test/common/publication-date-test.validation.unit.spec.ts` — every publication date scenario:
+  valid values, missing value, twelve malformed shapes, month, day, day-per-month including leap
+  years, hours, minutes, and the order in which several simultaneous problems are reported
 - `test/announcement/search-term-test.escape.unit.spec.ts` — wildcard escaping
 - `test/announcement/mapper-test.announcement.unit.spec.ts` — entity to DTO mapping
 

@@ -42,7 +42,7 @@ const AnnouncementRow = ({
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
         <Typography variant="body2">
-          {formatPublicationDate(announcement.publicationDate)}
+          {announcement.publicationDate}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>

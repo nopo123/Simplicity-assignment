@@ -51,7 +51,12 @@
       },
       "publicationDate": {
         "required": "Dátum zverejnenia je povinný",
-        "format": "Použite formát {{format}}"
+        "format": "Použite formát {{format}}",
+        "month": "Mesiac musí byť medzi {{monthMin}} a {{monthMax}}",
+        "day": "Deň musí byť medzi {{dayMin}} a {{dayMax}}",
+        "dayInMonth": "Ten mesiac má len {{maxDay}} dní",
+        "hour": "Hodiny musia byť medzi 00 a {{hourMax}}",
+        "minute": "Minúty musia byť medzi 00 a {{minuteMax}}"
       }
     },
     "notifications": {

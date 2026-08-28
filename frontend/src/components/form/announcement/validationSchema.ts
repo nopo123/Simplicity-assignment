@@ -4,8 +4,19 @@ import {
   ANNOUNCEMENT_BODY_MAX_LENGTH,
   ANNOUNCEMENT_TITLE_MAX_LENGTH,
 } from "./config/announcement.config";
+import {
+  PUBLICATION_DATE_DAY_MAX,
+  PUBLICATION_DATE_DAY_MIN,
+  PUBLICATION_DATE_ERROR_TRANSLATION_KEY,
+  PUBLICATION_DATE_HOUR_MAX,
+  PUBLICATION_DATE_MINUTE_MAX,
+  PUBLICATION_DATE_MONTH_MAX,
+  PUBLICATION_DATE_MONTH_MIN,
+  validatePublicationDate,
+} from "src/utils/date/publicationDateValidation";
 import { PUBLICATION_DATE_FORMAT } from "src/config/date.config";
-import { isValidPublicationDate } from "src/utils/date/dateFormat";
+
+const padded = (value: number): string => String(value).padStart(2, "0");
 
 export const createValidationSchema = (t: TFunction) =>
   Yup.object({
@@ -34,13 +45,28 @@ export const createValidationSchema = (t: TFunction) =>
       .min(1, t("announcements.validations.categoryIds.required"))
       .required(t("announcements.validations.categoryIds.required")),
 
-    publicationDate: Yup.string()
-      .required(t("announcements.validations.publicationDate.required"))
-      .test(
-        "publication-date-format",
-        t("announcements.validations.publicationDate.format", {
-          format: PUBLICATION_DATE_FORMAT,
-        }),
-        (value) => isValidPublicationDate(value ?? ""),
-      ),
+    publicationDate: Yup.string().test(
+      "publication-date",
+      "",
+      function publicationDateTest(value) {
+        const violation = validatePublicationDate(value);
+        if (!violation) return true;
+
+        return this.createError({
+          message: t(
+            PUBLICATION_DATE_ERROR_TRANSLATION_KEY[violation.error],
+            {
+              format: PUBLICATION_DATE_FORMAT,
+              monthMin: padded(PUBLICATION_DATE_MONTH_MIN),
+              monthMax: PUBLICATION_DATE_MONTH_MAX,
+              dayMin: padded(PUBLICATION_DATE_DAY_MIN),
+              dayMax: PUBLICATION_DATE_DAY_MAX,
+              hourMax: PUBLICATION_DATE_HOUR_MAX,
+              minuteMax: PUBLICATION_DATE_MINUTE_MAX,
+              maxDay: violation.maxDay,
+            },
+          ),
+        });
+      },
+    ),
   });

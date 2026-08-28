@@ -12,10 +12,11 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { IsPublicationDate } from 'src/common/helpers/dto.helper';
+import { PUBLICATION_DATE_FORMAT } from 'src/common/utils/publication-date.util';
 import {
   ANNOUNCEMENT_BODY_MAX_LENGTH,
   ANNOUNCEMENT_TITLE_MAX_LENGTH,
-  PUBLICATION_DATE_DISPLAY_FORMAT,
 } from '../config/announcement-validation.config';
 import { GetCategoryDto } from 'src/category/dto/get-category.dto';
 import { IdBaseDto } from 'src/common/dto/base.dto';
@@ -49,13 +50,12 @@ export class BaseAnnouncementDto extends IntersectionType(IdBaseDto) {
   readonly body: string;
 
   @ApiProperty({
-    example: '2026-08-28T08:55:00.000Z',
-    description: `Date and time the announcement is published, in ISO 8601. Clients that let a user type the date collect it as ${PUBLICATION_DATE_DISPLAY_FORMAT} and convert before sending.`,
+    example: '08/28/2026 08:55',
+    description: `Date and time the announcement is published, in the ${PUBLICATION_DATE_FORMAT} format and interpreted as UTC. Each part is validated on its own, so an out of range month, day, hour or minute is reported separately from a malformed value. The frontend runs the identical check before sending.`,
     type: String,
     required: true,
   })
-  @IsNotEmpty()
-  @IsISO8601()
+  @IsPublicationDate()
   @Type(() => String)
   readonly publicationDate: string;
 

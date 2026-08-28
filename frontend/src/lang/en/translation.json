@@ -51,7 +51,12 @@
       },
       "publicationDate": {
         "required": "Publication date is required",
-        "format": "Use the format {{format}}"
+        "format": "Use the format {{format}}",
+        "month": "Month must be between {{monthMin}} and {{monthMax}}",
+        "day": "Day must be between {{dayMin}} and {{dayMax}}",
+        "dayInMonth": "That month only has {{maxDay}} days",
+        "hour": "Hours must be between 00 and {{hourMax}}",
+        "minute": "Minutes must be between 00 and {{minuteMax}}"
       }
     },
     "notifications": {
