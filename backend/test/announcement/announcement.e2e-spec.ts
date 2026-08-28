@@ -290,6 +290,33 @@ describe('AnnouncementController (e2e)', () => {
       expect(response.body.total).toBe(1);
     });
 
+    it('matches when the term drops the diacritics of the content', async () => {
+      await createAndExpectId(
+        buildCreateDto({ title: 'Odstavka vody v Kosiciach' }),
+      );
+      await createAndExpectId(
+        buildCreateDto({ title: 'Odstavka vody v Košiciach' }),
+      );
+
+      const response = await listAnnouncements('?search=Kosiciach').expect(
+        HttpStatus.OK,
+      );
+
+      expect(response.body.total).toBe(2);
+    });
+
+    it('matches when the term carries diacritics the content does not', async () => {
+      await createAndExpectId(
+        buildCreateDto({ body: 'Zmena cestovneho poriadku' }),
+      );
+
+      const response = await listAnnouncements('?search=cestovného').expect(
+        HttpStatus.OK,
+      );
+
+      expect(response.body.total).toBe(1);
+    });
+
     it('treats a percent sign in the term literally', async () => {
       await createAndExpectId(
         buildCreateDto({ title: 'Passes are 30% cheaper' }),

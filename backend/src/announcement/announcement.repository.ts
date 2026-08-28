@@ -12,6 +12,12 @@ const ANNOUNCEMENT_SORT_COLUMNS: Record<ANNOUNCEMENT_SORT_BY, string> = {
   [ANNOUNCEMENT_SORT_BY.TITLE]: 'announcement.title',
 };
 
+const ANNOUNCEMENT_TITLE_SEARCH =
+  'unaccent(announcement.title) ILIKE unaccent(:search)';
+
+const ANNOUNCEMENT_BODY_SEARCH =
+  'unaccent(announcement.body) ILIKE unaccent(:search)';
+
 const CATEGORY_FILTER_SUBQUERY =
   'announcement.id IN (SELECT announcement_category."announcementId" FROM announcement_category WHERE announcement_category."categoryId" IN (:...categoryIds))';
 
@@ -40,8 +46,8 @@ export class AnnouncementRepository extends Repository<AnnouncementEntity> {
       queryBuilder.andWhere(
         new Brackets((where) => {
           where
-            .where('announcement.title ILIKE :search', { search })
-            .orWhere('announcement.body ILIKE :search', { search });
+            .where(ANNOUNCEMENT_TITLE_SEARCH, { search })
+            .orWhere(ANNOUNCEMENT_BODY_SEARCH, { search });
         }),
       );
     }
