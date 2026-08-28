@@ -12,6 +12,8 @@ coverage/
 CLAUDE.md
 AGENTS.md
 
+swagger-spec.yaml
+
 logs/
 *.log
 npm-debug.log*
