@@ -52,7 +52,12 @@ const AnnouncementForm = ({
   );
 
   return (
-    <Box sx={globalStyles.formWrapper}>
+    <Box
+      component="form"
+      onSubmit={formik.handleSubmit}
+      noValidate
+      sx={globalStyles.formWrapper}
+    >
       <FormikTextField
         name="title"
         label={t("announcements.form.title")}
@@ -129,9 +134,9 @@ const AnnouncementForm = ({
 
       <FormActionsStyled>
         <Button
+          type="submit"
           variant="contained"
           color="primary"
-          onClick={formik.submitForm}
           disabled={isSaving || !formik.dirty}
         >
           {t("announcements.form.publish")}
