@@ -1,5 +1,6 @@
 import { SxProps, Theme } from "@mui/material";
-import { BOX_SHADOW, commonStyles } from "./globalStyles";
+import { DIMENSIONS, MEDIA_DOWN_SM } from "src/config/config";
+import { commonStyles } from "./globalStyles";
 import { cssVar } from "src/utils/style/cssStyle";
 
 export const getTextFieldStyles = (
@@ -45,7 +46,10 @@ export const getAutocompleteStyles = (
 
 export const searchFieldStyles: SxProps<Theme> = {
   ...commonStyles.fullWidth,
-  maxWidth: "320px",
+  maxWidth: `${DIMENSIONS.FILTER_WIDTH}px`,
+  [MEDIA_DOWN_SM]: {
+    maxWidth: "100%",
+  },
   "& .MuiInputBase-input::placeholder": {
     color: cssVar("text-secondary"),
     opacity: 1,
@@ -53,22 +57,6 @@ export const searchFieldStyles: SxProps<Theme> = {
 };
 
 export const autocompletePopperStyles = {
-  "& .MuiAutocomplete-paper": {
-    backgroundColor: cssVar("common-white"),
-    border: `1px solid ${cssVar("grey-200")}`,
-    borderRadius: "8px",
-    boxShadow: BOX_SHADOW,
-    marginTop: "4px",
-    backgroundImage: "none",
-  },
-  "& .MuiAutocomplete-listbox": {
-    maxHeight: "260px",
-    padding: "4px",
-  },
-  "& .MuiAutocomplete-option": {
-    borderRadius: "6px",
-    minHeight: "36px",
-  },
   "& .MuiAutocomplete-option[aria-selected='true']": {
     backgroundColor: cssVar("primary-states-selected"),
   },

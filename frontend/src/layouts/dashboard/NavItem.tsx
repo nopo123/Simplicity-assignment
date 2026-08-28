@@ -11,18 +11,19 @@ import { icon } from "src/utils/style/svgIcon";
 interface NavItemProps {
   item: NavItemConfig;
   t: TFunction;
+  onNavigate?: () => void;
 }
 
-const NavItem = ({ item, t }: NavItemProps) => {
+const NavItem = ({ item, t, onNavigate }: NavItemProps) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const isSelected = pathname.startsWith(item.path);
 
-  const handleClick = useCallback(
-    () => navigate(item.path),
-    [navigate, item.path],
-  );
+  const handleClick = useCallback(() => {
+    navigate(item.path);
+    onNavigate?.();
+  }, [navigate, item.path, onNavigate]);
 
   return (
     <NavItemStyled selected={isSelected} onClick={handleClick}>

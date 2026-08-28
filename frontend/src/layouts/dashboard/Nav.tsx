@@ -8,7 +8,11 @@ import {
   NavRootStyled,
 } from "src/styles/customStyledComponent";
 
-const Nav = () => {
+interface NavProps {
+  onNavigate?: () => void;
+}
+
+const Nav = ({ onNavigate }: NavProps) => {
   const { t } = useTranslation();
 
   return (
@@ -23,7 +27,12 @@ const Nav = () => {
       </NavBrandStyled>
 
       {NAV_CONFIG.map((item) => (
-        <NavItem key={item.value} item={item} t={t} />
+        <NavItem
+          key={item.value}
+          item={item}
+          t={t}
+          onNavigate={onNavigate}
+        />
       ))}
     </NavRootStyled>
   );

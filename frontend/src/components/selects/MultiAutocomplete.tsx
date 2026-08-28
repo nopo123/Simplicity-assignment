@@ -1,11 +1,12 @@
 import { FocusEvent, SyntheticEvent, useCallback, useMemo } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
-import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import TextField from "@mui/material/TextField";
-import { CategoryChipStyled } from "src/styles/customStyledComponent";
-import { commonStyles } from "src/styles/globalStyles";
+import {
+  AutocompleteTagsStyled,
+  CategoryChipStyled,
+} from "src/styles/customStyledComponent";
 import {
   autocompletePopperStyles,
   getAutocompleteStyles,
@@ -74,7 +75,7 @@ const MultiAutocomplete = ({
       tagValue: CategoryOptionType[],
       getTagProps: (params: { index: number }) => object,
     ) => (
-      <Box sx={{ ...commonStyles.flexCenter, ...commonStyles.gap4px }}>
+      <AutocompleteTagsStyled>
         {tagValue.map((option, index) => (
           <CategoryChipStyled
             {...getTagProps({ index })}
@@ -83,7 +84,7 @@ const MultiAutocomplete = ({
             size="small"
           />
         ))}
-      </Box>
+      </AutocompleteTagsStyled>
     ),
     [],
   );

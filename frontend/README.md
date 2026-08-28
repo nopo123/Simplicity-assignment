@@ -37,6 +37,20 @@ The table keeps every text dark — header labels included — and renders categ
 comma-separated list rather than chips. Chips appear only in the category multiselect, which is
 where the design shows them.
 
+## Responsive behaviour
+
+Breakpoints live in [src/config/config.ts](src/config/config.ts) as `MEDIA_DOWN_SM` (600px) and
+`MEDIA_DOWN_MD` (900px), used from the style objects so they work in `sx` and in styled components
+alike.
+
+- below 900px the sidebar is hidden and the same `Nav` is rendered inside a temporary MUI `Drawer`,
+  opened from the hamburger in the content header; picking an item closes it
+- the table scrolls horizontally inside its `TableContainer` and keeps a minimum width, so columns
+  are never crushed — the `overflow` belongs on the container, not on the `Table`
+- below 600px the search field and the category filter go full width and stack vertically
+- page and form padding shrink at each step
+- selected category chips wrap inside the select instead of spilling out of its border
+
 ## Theme
 
 The amber palette lives in [src/theme/palette/palette-default.ts](src/theme/palette/palette-default.ts)

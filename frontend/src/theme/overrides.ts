@@ -129,6 +129,26 @@ export function overrides(theme: Theme) {
         },
       },
     },
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: theme.palette.common.white,
+          backgroundImage: "none",
+          border: `1px solid ${theme.palette.grey[200]}`,
+          borderRadius: Number(theme.shape.borderRadius),
+          boxShadow: theme.customShadows.dropdown,
+          marginTop: 4,
+        },
+        listbox: {
+          maxHeight: 260,
+          padding: 4,
+        },
+        option: {
+          borderRadius: 6,
+          minHeight: 36,
+        },
+      },
+    },
     MuiTooltip: {
       styleOverrides: {
         tooltip: {

@@ -62,8 +62,8 @@ const AnnouncementTable = ({
 
   return (
     <Box>
-      <TableContainer>
-        <Table sx={globalStyles.tableContainer}>
+      <TableContainer sx={globalStyles.tableContainer}>
+        <Table sx={globalStyles.table}>
           <TableHead>
             <TableRow>
               {columns.map((column, columnIndex) => (

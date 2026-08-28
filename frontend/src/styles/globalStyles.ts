@@ -1,4 +1,8 @@
-import { DIMENSIONS } from "src/config/config";
+import {
+  DIMENSIONS,
+  MEDIA_DOWN_MD,
+  MEDIA_DOWN_SM,
+} from "src/config/config";
 import { cssVar } from "src/utils/style/cssStyle";
 
 export const BORDER_COLOR = cssVar("grey-300");
@@ -69,12 +73,23 @@ export const globalStyles = {
   pageWrapper: {
     ...commonStyles.flexColumn,
     ...commonStyles.gap24px,
+    minWidth: 0,
     padding: "32px 40px",
+    [MEDIA_DOWN_MD]: {
+      padding: "24px",
+    },
+    [MEDIA_DOWN_SM]: {
+      padding: "20px 16px",
+      gap: "16px",
+    },
   },
   tableContainer: {
+    ...commonStyles.overflowXAuto,
+    ...commonStyles.fullWidth,
     borderTop: BORDER,
-    overflowX: "auto",
-    width: "100%",
+  },
+  table: {
+    minWidth: `${DIMENSIONS.TABLE_MIN_WIDTH}px`,
   },
   headerCell: {
     height: "52px",
@@ -85,6 +100,9 @@ export const globalStyles = {
     height: "52px",
     padding: "6px 24px 6px 48px",
     whiteSpace: "nowrap",
+    [MEDIA_DOWN_SM]: {
+      padding: "6px 16px",
+    },
   },
   bodyCell: {
     height: "48px",
@@ -97,6 +115,9 @@ export const globalStyles = {
     padding: "6px 24px 6px 48px",
     ...commonStyles.textOverflowEllipsis,
     maxWidth: "360px",
+    [MEDIA_DOWN_SM]: {
+      padding: "6px 16px",
+    },
   },
   actionCell: {
     height: "48px",
@@ -121,6 +142,9 @@ export const globalStyles = {
     ...commonStyles.gap16px,
     alignItems: "center",
     padding: "40px 24px",
+    [MEDIA_DOWN_SM]: {
+      padding: "24px 16px",
+    },
   },
   formTitleRow: {
     width: "100%",
@@ -130,6 +154,11 @@ export const globalStyles = {
     ...commonStyles.flexCenter,
     ...commonStyles.gap16px,
     ...commonStyles.flexWrap,
+    [MEDIA_DOWN_SM]: {
+      flexDirection: "column",
+      alignItems: "stretch",
+      gap: "12px",
+    },
   },
   emptyState: {
     ...commonStyles.flexColumnCenterCenter,

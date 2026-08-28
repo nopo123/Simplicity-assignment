@@ -1,9 +1,10 @@
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import { styled } from "@mui/material/styles";
 import { commonStyles } from "./globalStyles";
-import { DIMENSIONS } from "src/config/config";
+import { DIMENSIONS, MEDIA_DOWN_MD } from "src/config/config";
 import { cssVar } from "src/utils/style/cssStyle";
 
 export const DashboardRootStyled = styled(Box)({
@@ -87,12 +88,40 @@ export const FormActionsStyled = styled(Box)({
 });
 
 export const AnnouncementCategoryFilterStyled = styled(Box)({
-  width: "320px",
+  width: `${DIMENSIONS.FILTER_WIDTH}px`,
   maxWidth: "100%",
+  [MEDIA_DOWN_MD]: {
+    width: "100%",
+  },
+});
+
+export const AutocompleteTagsStyled = styled(Box)({
+  ...commonStyles.flexCenter,
+  ...commonStyles.gap4px,
+  ...commonStyles.flexWrap,
+  maxWidth: "100%",
+  overflow: "hidden",
 });
 
 export const ContentHeaderStyled = styled("header")({
+  ...commonStyles.flexCenter,
+  ...commonStyles.gap8px,
   height: `${DIMENSIONS.CONTENT_HEADER_HEIGHT}px`,
   flexShrink: 0,
   borderBottom: `1px solid ${cssVar("grey-200")}`,
+  paddingLeft: "12px",
+});
+
+export const NavSidebarStyled = styled(Box)({
+  display: "flex",
+  [MEDIA_DOWN_MD]: {
+    display: "none",
+  },
+});
+
+export const MobileMenuButtonStyled = styled(IconButton)({
+  display: "none",
+  [MEDIA_DOWN_MD]: {
+    display: "inline-flex",
+  },
 });
