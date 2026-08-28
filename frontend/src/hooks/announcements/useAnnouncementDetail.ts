@@ -9,11 +9,14 @@ import {
   AnnouncementType,
   CreateAnnouncementType,
 } from "src/types/announcement";
+import { isNotFoundError } from "src/utils/api/apiError";
 
 interface UseAnnouncementDetailProps {
-  readonly announcementId?: number;
+  readonly announcementId: number | null;
   readonly onLeave: () => void;
 }
+
+const DETAIL_RETRY_LIMIT = 1;
 
 export const useAnnouncementDetail = ({
   announcementId,
@@ -28,11 +31,16 @@ export const useAnnouncementDetail = ({
     data: announcement,
     isLoading,
     isError,
+    error,
   } = useQuery<AnnouncementType>({
     queryKey: QUERY_KEYS.announcements.detail(announcementId),
     queryFn: () => announcementApi.getAnnouncement(announcementId),
     enabled: announcementId != null,
+    retry: (failureCount, queryError) =>
+      !isNotFoundError(queryError) && failureCount < DETAIL_RETRY_LIMIT,
   });
+
+  const isNotFound = isNotFoundError(error);
 
   const invalidateAndLeave = async () => {
     await queryClient.invalidateQueries({
@@ -62,19 +70,21 @@ export const useAnnouncementDetail = ({
     onError: () => showError(),
   });
 
+  const saveAnnouncement = announcementId
+    ? updateMutation.mutateAsync
+    : createMutation.mutateAsync;
+
   useEffect(() => {
-    if (isError) {
-      showError("announcements.form.notFound");
+    if (isError && !isNotFound) {
+      showError();
       onLeave();
     }
-  }, [isError, showError, onLeave]);
+  }, [isError, isNotFound, showError, onLeave]);
 
   return {
     announcement,
     isLoading,
-    saveAnnouncement: announcementId
-      ? updateMutation.mutate
-      : createMutation.mutate,
-    isSaving: createMutation.isPending || updateMutation.isPending,
+    isNotFound,
+    saveAnnouncement,
   };
 };

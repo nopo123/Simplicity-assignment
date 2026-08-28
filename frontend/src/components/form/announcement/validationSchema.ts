@@ -45,7 +45,7 @@ export const createValidationSchema = (t: TFunction) =>
       .min(1, t("announcements.validations.categoryIds.required"))
       .required(t("announcements.validations.categoryIds.required")),
 
-    publicationDate: Yup.string().test(
+    publicationDate: Yup.string().trim().test(
       "publication-date",
       "",
       function publicationDateTest(value) {

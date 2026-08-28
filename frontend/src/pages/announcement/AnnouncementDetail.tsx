@@ -7,6 +7,7 @@ import AnnouncementForm from "src/components/form/announcement/AnnouncementForm"
 import { AnnouncementFormValues } from "src/components/form/announcement/types/announcementForm";
 import { mapFormValuesToPayload } from "src/components/form/announcement/utils/announcementFormValues";
 import ClassicLoader from "src/components/customs/ClassicLoader";
+import NotFoundPage from "src/pages/NotFoundPage";
 import PageTitle from "src/components/customs/PageTitle";
 import { DIMENSIONS } from "src/config/config";
 import { useAnnouncementDetail } from "src/hooks/announcements/useAnnouncementDetail";
@@ -23,7 +24,10 @@ const AnnouncementDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const announcementId = id ? Number(id) : undefined;
+  const parsedId = Number(id);
+  const announcementId =
+    Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null;
+  const isUnknownRoute = id !== undefined && announcementId === null;
 
   const pageTitle = announcementId
     ? t("announcements.form.editTitle")
@@ -34,14 +38,21 @@ const AnnouncementDetail = () => {
     [navigate],
   );
 
-  const { announcement, isLoading, saveAnnouncement, isSaving } =
+  const { announcement, isLoading, isNotFound, saveAnnouncement } =
     useAnnouncementDetail({ announcementId, onLeave: handleBack });
 
   const handleSubmit = useCallback(
-    (values: AnnouncementFormValues) =>
-      saveAnnouncement(mapFormValuesToPayload(values)),
+    async (values: AnnouncementFormValues) => {
+      await saveAnnouncement(mapFormValuesToPayload(values)).catch(
+        () => undefined,
+      );
+    },
     [saveAnnouncement],
   );
+
+  if (isUnknownRoute || isNotFound) {
+    return <NotFoundPage />;
+  }
 
   if (isLoading) {
     return <ClassicLoader />;
@@ -67,12 +78,7 @@ const AnnouncementDetail = () => {
         <Typography variant="h4">{pageTitle}</Typography>
       </FormTitleRowStyled>
 
-      <AnnouncementForm
-        announcement={announcement}
-        isSaving={isSaving}
-        t={t}
-        onSubmit={handleSubmit}
-      />
+      <AnnouncementForm announcement={announcement} t={t} onSubmit={handleSubmit} />
     </Box>
   );
 };

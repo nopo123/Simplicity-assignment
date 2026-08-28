@@ -18,14 +18,12 @@ import { mapAnnouncementToFormValues } from "src/components/form/announcement/ut
 
 interface AnnouncementFormProps {
   readonly announcement?: AnnouncementType;
-  readonly isSaving: boolean;
   readonly t: TFunction;
-  readonly onSubmit: (values: AnnouncementFormValues) => void;
+  readonly onSubmit: (values: AnnouncementFormValues) => Promise<void>;
 }
 
 const AnnouncementForm = ({
   announcement,
-  isSaving,
   t,
   onSubmit,
 }: AnnouncementFormProps) => {
@@ -42,7 +40,6 @@ const AnnouncementForm = ({
     initialValues,
     validationSchema,
     enableReinitialize: true,
-    validateOnChange: false,
     onSubmit,
   });
 
@@ -137,7 +134,7 @@ const AnnouncementForm = ({
           type="submit"
           variant="contained"
           color="primary"
-          disabled={isSaving || !formik.dirty}
+          disabled={formik.isSubmitting || !formik.dirty}
         >
           {t("announcements.form.publish")}
         </Button>
