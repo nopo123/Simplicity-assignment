@@ -1,0 +1,69 @@
+{
+  "general": {
+    "errorOccurred": "Something went wrong, please try again",
+    "noResults": "No results"
+  },
+  "navigation": {
+    "announcements": "Announcements"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "table": {
+      "title": "Title",
+      "publicationDate": "Publication date",
+      "lastUpdate": "Last update",
+      "categories": "Categories",
+      "edit": "Edit the announcement",
+      "emptyTitle": "No announcements found",
+      "emptyHint": "Try a different search term or clear the category filter"
+    },
+    "filters": {
+      "searchPlaceholder": "Search title or content",
+      "category": "Category",
+      "categoryPlaceholder": "All categories"
+    },
+    "form": {
+      "createTitle": "Create the announcement",
+      "editTitle": "Edit the announcement",
+      "title": "Title",
+      "body": "Content",
+      "category": "Category",
+      "categoryHint": "Select category so readers know what your announcement is about",
+      "categoryLabel": "Categories",
+      "categoryPlaceholder": "Select categories",
+      "publicationDate": "Publication date",
+      "publicationDateLabel": "Publication date",
+      "publish": "Publish",
+      "created": "Announcement has been created",
+      "updated": "Announcement has been updated",
+      "deleted": "Announcement has been deleted",
+      "notFound": "Announcement was not found",
+      "validationFailed": "Please fix the following: {{messages}}"
+    },
+    "validations": {
+      "title": {
+        "required": "Title is required",
+        "maxLength": "Title can be at most {{max}} characters"
+      },
+      "body": {
+        "required": "Content is required",
+        "maxLength": "Content can be at most {{max}} characters"
+      },
+      "categoryIds": {
+        "required": "At least one category is required"
+      },
+      "publicationDate": {
+        "required": "Publication date is required",
+        "format": "Use the format {{format}}"
+      }
+    },
+    "notifications": {
+      "created": "New announcement: {{title}}"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "hint": "The page you are looking for does not exist",
+    "backToAnnouncements": "Back to announcements"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "general": {
+    "errorOccurred": "Niečo sa pokazilo, skúste to znova",
+    "noResults": "Žiadne výsledky"
+  },
+  "navigation": {
+    "announcements": "Oznamy"
+  },
+  "announcements": {
+    "title": "Oznamy",
+    "table": {
+      "title": "Názov",
+      "publicationDate": "Dátum zverejnenia",
+      "lastUpdate": "Posledná úprava",
+      "categories": "Kategórie",
+      "edit": "Upraviť oznam",
+      "emptyTitle": "Nenašli sa žiadne oznamy",
+      "emptyHint": "Skúste iný hľadaný výraz alebo zrušte filter kategórií"
+    },
+    "filters": {
+      "searchPlaceholder": "Hľadať v názve alebo obsahu",
+      "category": "Kategória",
+      "categoryPlaceholder": "Všetky kategórie"
+    },
+    "form": {
+      "createTitle": "Vytvoriť oznam",
+      "editTitle": "Upraviť oznam",
+      "title": "Názov",
+      "body": "Obsah",
+      "category": "Kategória",
+      "categoryHint": "Vyberte kategóriu, aby čitatelia vedeli, o čom oznam je",
+      "categoryLabel": "Kategórie",
+      "categoryPlaceholder": "Vyberte kategórie",
+      "publicationDate": "Dátum zverejnenia",
+      "publicationDateLabel": "Dátum zverejnenia",
+      "publish": "Zverejniť",
+      "created": "Oznam bol vytvorený",
+      "updated": "Oznam bol upravený",
+      "deleted": "Oznam bol zmazaný",
+      "notFound": "Oznam sa nenašiel",
+      "validationFailed": "Prosím doplňte: {{messages}}"
+    },
+    "validations": {
+      "title": {
+        "required": "Názov je povinný",
+        "maxLength": "Názov môže mať najviac {{max}} znakov"
+      },
+      "body": {
+        "required": "Obsah je povinný",
+        "maxLength": "Obsah môže mať najviac {{max}} znakov"
+      },
+      "categoryIds": {
+        "required": "Aspoň jedna kategória je povinná"
+      },
+      "publicationDate": {
+        "required": "Dátum zverejnenia je povinný",
+        "format": "Použite formát {{format}}"
+      }
+    },
+    "notifications": {
+      "created": "Nový oznam: {{title}}"
+    }
+  },
+  "notFound": {
+    "title": "Stránka sa nenašla",
+    "hint": "Stránka, ktorú hľadáte, neexistuje",
+    "backToAnnouncements": "Späť na oznamy"
+  }
+}
