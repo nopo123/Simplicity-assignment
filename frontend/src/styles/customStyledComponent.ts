@@ -30,29 +30,30 @@ export const NavRootStyled = styled("nav")({
 
 export const NavBrandStyled = styled(Box)({
   ...commonStyles.flexCenter,
-  ...commonStyles.gap8px,
+  ...commonStyles.gap12px,
   height: `${DIMENSIONS.CONTENT_HEADER_HEIGHT}px`,
-  paddingLeft: "12px",
+  flexShrink: 0,
+  paddingLeft: "16px",
 });
 
 export const NavBrandAvatarStyled = styled(Box)({
   ...commonStyles.flexCenterCenter,
   ...commonStyles.borderRadius50,
-  width: "20px",
-  height: "20px",
+  width: `${DIMENSIONS.NAV_AVATAR_SIZE}px`,
+  height: `${DIMENSIONS.NAV_AVATAR_SIZE}px`,
   flexShrink: 0,
   backgroundColor: cssVar("primary-main"),
   color: cssVar("primary-contrastText"),
-  fontSize: "10px",
+  fontSize: "14px",
   fontWeight: 700,
 });
 
 export const NavItemStyled = styled(ListItemButton)({
-  ...commonStyles.gap8px,
+  ...commonStyles.gap12px,
   flexGrow: 0,
-  minHeight: "34px",
-  paddingLeft: "14px",
-  paddingRight: "14px",
+  minHeight: `${DIMENSIONS.NAV_ITEM_HEIGHT}px`,
+  paddingLeft: "16px",
+  paddingRight: "16px",
   color: cssVar("text-primary"),
   "&:hover": {
     backgroundColor: cssVar("primary-lighter"),

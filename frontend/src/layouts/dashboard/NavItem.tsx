@@ -35,7 +35,7 @@ const NavItem = ({ item, t, onNavigate }: NavItemProps) => {
       )}
       <ListItemText
         primary={t(item.labelKey)}
-        primaryTypographyProps={{ variant: "caption", color: "text.primary" }}
+        primaryTypographyProps={{ variant: "body2", color: "text.primary" }}
       />
     </NavItemStyled>
   );

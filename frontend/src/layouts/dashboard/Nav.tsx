@@ -21,7 +21,7 @@ const Nav = ({ onNavigate }: NavProps) => {
         <NavBrandAvatarStyled>
           {ORGANIZATION_NAME.charAt(0)}
         </NavBrandAvatarStyled>
-        <Typography variant="caption" color="text.primary" fontWeight={700}>
+        <Typography variant="subtitle2" color="text.primary">
           {ORGANIZATION_NAME}
         </Typography>
       </NavBrandStyled>
