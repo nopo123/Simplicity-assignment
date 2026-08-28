@@ -1,0 +1,281 @@
+{
+  "info": {
+    "name": "Announcements API",
+    "description": "Announcements assignment API. Run the requests top to bottom — Create stores the new id into the announcementId variable, which the later requests reuse.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "announcementId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "health"]
+        },
+        "description": "Liveness probe. Returns ok when the database answers."
+      }
+    },
+    {
+      "name": "List categories",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns the nine seeded categories', () => {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json()).to.have.lengthOf(9);",
+              "});",
+              "",
+              "const categories = pm.response.json();",
+              "if (categories.length > 0) {",
+              "  pm.collectionVariables.set('categoryId', categories[0].id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/categories",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "categories"]
+        },
+        "description": "Fixed reference data, ordered for selectors. Stores the first id into categoryId."
+      }
+    },
+    {
+      "name": "Create announcement",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('created', () => pm.response.to.have.status(201));",
+              "",
+              "pm.collectionVariables.set('announcementId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Storm warning for the weekend\",\n  \"body\": \"A strong storm front is expected on Saturday evening. Secure loose objects on balconies.\",\n  \"publicationDate\": \"2026-08-28T08:55:00.000Z\",\n  \"categoryIds\": [{{categoryId}}]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"]
+        },
+        "description": "publicationDate is ISO 8601 on the wire. Broadcasts announcementCreated over the websocket on success."
+      }
+    },
+    {
+      "name": "Create announcement - validation error",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rejected with 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"Missing title, publication date and categories\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"]
+        },
+        "description": "Shows the error envelope: statusCode, message, timestamp."
+      }
+    },
+    {
+      "name": "List announcements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements?page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" }
+          ]
+        },
+        "description": "Default order is last update descending, so the announcement created above comes first."
+      }
+    },
+    {
+      "name": "List announcements - text search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements?search=storm",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"],
+          "query": [{ "key": "search", "value": "storm" }]
+        },
+        "description": "Case-insensitive match against the title or the body."
+      }
+    },
+    {
+      "name": "List announcements - category filter",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements?categoryIds={{categoryId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"],
+          "query": [{ "key": "categoryIds", "value": "{{categoryId}}" }]
+        },
+        "description": "Accepts a repeated parameter or one comma-separated value. Matched announcements still return their full category list."
+      }
+    },
+    {
+      "name": "List announcements - sorted by publication date",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements?sortBy=PUBLICATION_DATE&sortOrder=ASC",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements"],
+          "query": [
+            { "key": "sortBy", "value": "PUBLICATION_DATE" },
+            { "key": "sortOrder", "value": "ASC" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get announcement",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements", "{{announcementId}}"]
+        },
+        "description": "What the edit form loads to prefill its fields."
+      }
+    },
+    {
+      "name": "Update announcement",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Storm warning extended to Sunday\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements", "{{announcementId}}"]
+        },
+        "description": "Only the supplied fields change. categoryIds would replace the whole set. Any update moves the last-update timestamp forward."
+      }
+    },
+    {
+      "name": "Delete announcement",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('deleted with no content', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements", "{{announcementId}}"]
+        }
+      }
+    },
+    {
+      "name": "Get announcement - not found",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('gone after delete', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "announcements", "{{announcementId}}"]
+        }
+      }
+    }
+  ]
+}

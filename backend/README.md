@@ -1,0 +1,228 @@
+# Announcements — Backend
+
+NestJS + TypeORM + PostgreSQL REST API for managing city announcements.
+
+- URL versioning is enabled, so every route is prefixed with `/v1`
+- Swagger UI on http://localhost:3000/swagger, and `swagger-spec.yaml` is rewritten on every boot
+- No authentication — every endpoint is public, which keeps the assignment focused on the announcements domain
+
+## Running the project
+
+### Option A — everything in Docker
+
+From the repository root:
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
+Migrations and the seed run automatically in the backend container entrypoint, so the API comes up
+with the nine categories and ten demo announcements already in place. The seed is idempotent — a
+second `docker compose up -d` logs `Seed skipped` instead of duplicating rows.
+
+### Option B — database in Docker, backend locally
+
+From the repository root:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+Then in `backend/`:
+
+```bash
+cp .env.example .env
+npm ci
+npm run migration:run
+npm run seed
+npm run start:dev
+```
+
+The API listens on http://localhost:3000.
+
+## Environment variables
+
+| Variable | Example | Meaning |
+|---|---|---|
+| `APP_ENV` | `dev` | `dev` enables SQL logging when `DATABASE_ENABLE_LOGGING` is also true |
+| `PORT` | `3000` | HTTP port |
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:3001` | Comma-separated allow list, also applied to the websocket namespace. Startup fails if unset |
+| `DATABASE_HOST` | `localhost` | `postgres_db` inside the Docker network |
+| `DATABASE_PORT` | `5432` | |
+| `DATABASE_PORT_TEST` | `5433` | Port of the `test_db` service, used by the e2e tests |
+| `DATABASE_NAME` | `announcements` | |
+| `DATABASE_NAME_TEST` | `announcements_test` | |
+| `DATABASE_USER` | `admin` | |
+| `DATABASE_PASSWORD` | `admin` | |
+| `DATABASE_ENABLE_LOGGING` | `true` | |
+| `DATABASE_MIGRATION_NAME` | `migration` | Name of the migrations bookkeeping table |
+
+## Data model
+
+```
+category                          announcement                    announcement_category
+──────────                        ────────────                    ─────────────────────
+id             serial PK          id              serial PK       announcementId  FK CASCADE
+code           varchar(64) UQ     title           varchar(255)    categoryId      FK CASCADE
+labels         jsonb {en,sk}      body            text            PK(announcementId, categoryId)
+orderingNumber int                publicationDate timestamptz
+created        timestamptz        created         timestamptz
+updated        timestamptz        updated         timestamptz
+```
+
+The many-to-many relation is **unidirectional** — `AnnouncementEntity` owns it through `@JoinTable`,
+and `CategoryEntity` carries no inverse property. Categories are fixed reference data created by a
+migration, so there is no write endpoint for them.
+
+`updated` is the *Last update* column of the announcements table and the default sort key of the
+list endpoint. An update that changes only the categories still moves it forward, because the
+service touches the timestamp explicitly rather than relying on TypeORM's change detection (a
+junction-table-only change produces no `UPDATE` on the announcement row).
+
+## Endpoints
+
+| Method | Route | Success | Description |
+|---|---|---|---|
+| `GET` | `/v1/announcements` | 200 | One page of announcements plus the total number of matches |
+| `GET` | `/v1/announcements/:id` | 200 | One announcement with its categories |
+| `POST` | `/v1/announcements` | 201 | Create, then broadcast over the websocket |
+| `PATCH` | `/v1/announcements/:id` | 200 | Partial update; `categoryIds` replaces the whole set |
+| `DELETE` | `/v1/announcements/:id` | 204 | Delete the announcement and its category links |
+| `GET` | `/v1/categories` | 200 | All categories, ordered for selectors |
+| `GET` | `/v1/health` | 200 | Liveness probe including a database round trip |
+
+### `GET /v1/announcements`
+
+| Query param | Type | Default | Meaning |
+|---|---|---|---|
+| `search` | string, max 255 | — | Case-insensitive match against `title` **or** `body`. `%` and `_` in the term are escaped, so they match literally |
+| `categoryIds` | number list | — | Keeps announcements carrying at least one of these categories. Accepts `?categoryIds=1&categoryIds=8` or `?categoryIds=1,8` |
+| `sortBy` | `LAST_UPDATE` · `PUBLICATION_DATE` · `TITLE` | `LAST_UPDATE` | |
+| `sortOrder` | `ASC` · `DESC` | `DESC` | |
+| `page` | int ≥ 1 | `1` | |
+| `limit` | int 1–100 | `10` | |
+
+A filtered announcement still returns its **full** category list, not only the categories that
+matched the filter.
+
+```bash
+curl "http://localhost:3000/v1/announcements?search=water&categoryIds=1,6&page=1&limit=10"
+```
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "Water supply interruption in the city centre",
+      "body": "Water will be shut off on Main Street between 8:00 and 14:00",
+      "publicationDate": "2026-08-11T04:38:00.000Z",
+      "categories": [
+        { "id": 1, "code": "CITY", "labels": { "en": "City", "sk": "Mesto" }, "orderingNumber": 1 }
+      ],
+      "created": "2026-08-28T09:00:00.000Z",
+      "updated": "2026-08-28T09:00:00.000Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "limit": 10
+}
+```
+
+### `POST /v1/announcements`
+
+`publicationDate` is **ISO 8601** on the wire. The frontend collects it as `MM/DD/YYYY HH:mm` in a
+text input and converts before sending, which is why the API itself does not accept that display
+format.
+
+```bash
+curl -X POST http://localhost:3000/v1/announcements \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Storm warning for the weekend",
+    "body": "A strong storm front is expected on Saturday evening",
+    "publicationDate": "2026-08-28T08:55:00.000Z",
+    "categoryIds": [1, 6]
+  }'
+```
+
+Every field is required and at least one existing category id must be supplied. Unknown properties
+are rejected. Errors come back in a single shape:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Unknown category ids: 999999",
+  "timestamp": "2026-08-28T10:15:30.000Z"
+}
+```
+
+## Websocket notification
+
+After a successful `POST /v1/announcements` the service emits an internal event, and the gateway
+broadcasts the created announcement to every client connected to the `announcements` namespace. The
+service does not know about the gateway, so the HTTP path stays independent of the transport.
+
+- Namespace: `ws://localhost:3000/announcements`
+- Message: `announcementCreated`
+- Payload: the same object `POST` returned
+
+```js
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3000/announcements', { transports: ['websocket'] });
+socket.on('announcementCreated', (announcement) => console.log(announcement.title));
+```
+
+## Testing the API
+
+**Swagger** — http://localhost:3000/swagger lists every endpoint with request and response schemas
+and lets you fire requests directly.
+
+**Postman** — import [`docs/postman/Announcements.postman_collection.json`](../docs/postman/Announcements.postman_collection.json).
+The collection has a `baseUrl` variable (default `http://localhost:3000`) and stores the id of the
+created announcement into `announcementId`, so the requests can be run top to bottom as a flow:
+create → list → search → filter → get → patch → delete.
+
+## Automated tests
+
+Two Jest projects. The e2e project needs the `test_db` service from `docker-compose.dev.yml`
+running on port 5433 — it runs the migrations itself and truncates the announcement tables between
+tests.
+
+```bash
+npm run test:unit
+npm run test:e2e
+npm test
+```
+
+Coverage:
+
+- `test/announcement/announcement.e2e-spec.ts` — create validation, sorting, search in title and
+  body, literal wildcard handling, single and multi category filtering, combined search plus
+  filter, pagination totals, detail, partial update, category replacement, the last-update bump on
+  a categories-only change, and delete
+- `test/announcement/announcement-websocket.e2e-spec.ts` — a subscribed client receives
+  `announcementCreated`, and a rejected create broadcasts nothing
+- `test/category/category.e2e-spec.ts` — the seeded set, its ordering, and the response shape
+- `test/announcement/search-term-test.escape.unit.spec.ts` — wildcard escaping
+- `test/announcement/mapper-test.announcement.unit.spec.ts` — entity to DTO mapping
+
+## Migrations
+
+```bash
+npm run migration:run
+npm run migration:revert
+npm run migration:show
+npm run migration:generate --name=my-migration
+```
+
+`synchronize` is off, so the schema only ever changes through a migration. In the production image
+the compiled variants run instead, which is what the Docker entrypoint calls:
+
+```bash
+npm run migration:run:prod
+npm run seed:prod
+```
