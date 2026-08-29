@@ -3,6 +3,11 @@ import {
   CreateAnnouncementType,
 } from "src/types/announcement";
 import { AnnouncementFormValues } from "../types/announcementForm";
+import {
+  currentPublicationDateInput,
+  publicationDateToLocalInput,
+  publicationDateToUtcPayload,
+} from "src/utils/date/dateFormat";
 
 export const mapAnnouncementToFormValues = (
   announcement: AnnouncementType | undefined,
@@ -10,7 +15,9 @@ export const mapAnnouncementToFormValues = (
   title: announcement?.title ?? "",
   body: announcement?.body ?? "",
   categoryIds: announcement?.categories.map((category) => category.id) ?? [],
-  publicationDate: announcement?.publicationDate ?? "",
+  publicationDate: announcement
+    ? publicationDateToLocalInput(announcement.publicationDate)
+    : currentPublicationDateInput(),
 });
 
 export const mapFormValuesToPayload = (
@@ -19,5 +26,5 @@ export const mapFormValuesToPayload = (
   title: values.title.trim(),
   body: values.body.trim(),
   categoryIds: values.categoryIds,
-  publicationDate: values.publicationDate.trim(),
+  publicationDate: publicationDateToUtcPayload(values.publicationDate.trim()),
 });

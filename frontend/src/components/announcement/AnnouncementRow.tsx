@@ -47,12 +47,12 @@ const AnnouncementRow = ({
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
         <Typography variant="body2">
-          {formatPublicationDate(announcement.publicationDate)}
+          {formatPublicationDate(announcement.publicationDate, language)}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
         <Typography variant="body2">
-          {formatLastUpdate(announcement.updated)}
+          {formatLastUpdate(announcement.updated, language)}
         </Typography>
       </TableCell>
       <TableCell sx={globalStyles.bodyCell}>
