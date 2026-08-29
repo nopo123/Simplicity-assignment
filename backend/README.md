@@ -48,28 +48,28 @@ The API listens on http://localhost:3000.
 
 There are two files and they are not interchangeable:
 
-| File | Read by | Purpose |
-|---|---|---|
-| root `.env` | `docker compose` | host port bindings and the credentials handed to both Postgres containers |
-| `backend/.env` | the Nest process | used when the backend runs on the host (Option B) and by `npm test` |
+| File           | Read by          | Purpose                                                                   |
+| -------------- | ---------------- | ------------------------------------------------------------------------- |
+| root `.env`    | `docker compose` | host port bindings and the credentials handed to both Postgres containers |
+| `backend/.env` | the Nest process | used when the backend runs on the host (Option B) and by `npm test`       |
 
 In Option A the compose file passes the environment to the container directly, so `backend/.env` is
 not consulted at all. That is why `DATABASE_HOST` differs between them: `postgres_db` (the compose
 service name) inside the Docker network, `localhost` when the process runs on the host.
 
-| Variable | Example | Meaning |
-|---|---|---|
-| `APP_ENV` | `dev` | `dev` also writes `swagger-spec.yaml` on boot, and enables SQL logging together with `DATABASE_ENABLE_LOGGING` |
-| `PORT` | `3000` | Port the Nest process listens on. In the container this stays 3000; the host-side port is the root `.env` variable `BACKEND_PORT` |
-| `DATABASE_HOST` | `localhost` | `postgres_db` inside the Docker network |
-| `DATABASE_PORT` | `5432` | Port of the application database |
-| `DATABASE_PORT_TEST` | `5433` | Port of `test_db`, used only by the e2e tests |
-| `DATABASE_NAME` | `announcements` | |
-| `DATABASE_NAME_TEST` | `announcements_test` | Created by the `test_db` container on first start |
-| `DATABASE_USER` | `admin` | |
-| `DATABASE_PASSWORD` | `admin` | |
-| `DATABASE_ENABLE_LOGGING` | `true` | Logs every SQL statement. The compose file forces it off for the container, so `docker compose logs backend` stays readable |
-| `DATABASE_MIGRATION_NAME` | `migration` | Name of the migrations bookkeeping table |
+| Variable                  | Example              | Meaning                                                                                                                           |
+| ------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `APP_ENV`                 | `dev`                | `dev` also writes `swagger-spec.yaml` on boot, and enables SQL logging together with `DATABASE_ENABLE_LOGGING`                    |
+| `PORT`                    | `3000`               | Port the Nest process listens on. In the container this stays 3000; the host-side port is the root `.env` variable `BACKEND_PORT` |
+| `DATABASE_HOST`           | `localhost`          | `postgres_db` inside the Docker network                                                                                           |
+| `DATABASE_PORT`           | `5432`               | Port of the application database                                                                                                  |
+| `DATABASE_PORT_TEST`      | `5433`               | Port of `test_db`, used only by the e2e tests                                                                                     |
+| `DATABASE_NAME`           | `announcements`      |                                                                                                                                   |
+| `DATABASE_NAME_TEST`      | `announcements_test` | Created by the `test_db` container on first start                                                                                 |
+| `DATABASE_USER`           | `admin`              |                                                                                                                                   |
+| `DATABASE_PASSWORD`       | `admin`              |                                                                                                                                   |
+| `DATABASE_ENABLE_LOGGING` | `true`               | Logs every SQL statement. The compose file forces it off for the container, so `docker compose logs backend` stays readable       |
+| `DATABASE_MIGRATION_NAME` | `migration`          | Name of the migrations bookkeeping table                                                                                          |
 
 If a port is already taken on your machine, change it in the root `.env` — all four host ports are
 variables there. See [the ports table](../README.md#ports), including the rebuild that a changed
@@ -92,34 +92,28 @@ The many-to-many relation is **unidirectional** — `AnnouncementEntity` owns it
 and `CategoryEntity` carries no inverse property. Categories are fixed reference data created by a
 migration, so there is no write endpoint for them.
 
-`updated` is the *Last update* column of the announcements table and the default sort key of the
-list endpoint. An update that changes only the categories still moves it forward: the service puts a
-fresh `updated` on the entity it saves, which is what makes the scalar `UPDATE` fire at all — a
-junction-table-only change would otherwise produce no `UPDATE` on the announcement row and leave the
-timestamp behind.
-
 ## Endpoints
 
-| Method | Route | Success | Description |
-|---|---|---|---|
-| `GET` | `/v1/announcements` | 200 | One page of announcements plus the total number of matches |
-| `GET` | `/v1/announcements/:id` | 200 | One announcement with its categories |
-| `POST` | `/v1/announcements` | 201 | Create, then broadcast over the websocket |
-| `PUT` | `/v1/announcements/:id` | 200 | Full update; every field is required; `categoryIds` replaces the whole set |
-| `DELETE` | `/v1/announcements/:id` | 204 | Delete the announcement and its category links |
-| `GET` | `/v1/categories` | 200 | All categories, ordered for selectors |
-| `GET` | `/v1/health` | 200 | Liveness probe including a database round trip |
+| Method   | Route                   | Success | Description                                                                |
+| -------- | ----------------------- | ------- | -------------------------------------------------------------------------- |
+| `GET`    | `/v1/announcements`     | 200     | One page of announcements plus the total number of matches                 |
+| `GET`    | `/v1/announcements/:id` | 200     | One announcement with its categories                                       |
+| `POST`   | `/v1/announcements`     | 201     | Create, then broadcast over the websocket                                  |
+| `PUT`    | `/v1/announcements/:id` | 200     | Full update; every field is required; `categoryIds` replaces the whole set |
+| `DELETE` | `/v1/announcements/:id` | 204     | Delete the announcement and its category links                             |
+| `GET`    | `/v1/categories`        | 200     | All categories, ordered for selectors                                      |
+| `GET`    | `/v1/health`            | 200     | Liveness probe including a database round trip                             |
 
 ### `GET /v1/announcements`
 
-| Query param | Type | Default | Meaning |
-|---|---|---|---|
-| `search` | string, max 255 | — | Case-insensitive match against `title` **or** `body`. `%` and `_` in the term are escaped, so they match literally |
-| `categoryIds` | number list | — | Keeps announcements carrying at least one of these categories. Accepts `?categoryIds=1&categoryIds=8` or `?categoryIds=1,8` |
-| `sortBy` | `LAST_UPDATE` · `PUBLICATION_DATE` · `TITLE` | `LAST_UPDATE` | |
-| `sortOrder` | `ASC` · `DESC` | `DESC` | |
-| `page` | int ≥ 1 | `1` | |
-| `limit` | int 1–100 | `10` | |
+| Query param   | Type                                         | Default       | Meaning                                                                                                                     |
+| ------------- | -------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `search`      | string, max 255                              | —             | Case-insensitive match against `title` **or** `body`. `%` and `_` in the term are escaped, so they match literally          |
+| `categoryIds` | number list                                  | —             | Keeps announcements carrying at least one of these categories. Accepts `?categoryIds=1&categoryIds=8` or `?categoryIds=1,8` |
+| `sortBy`      | `LAST_UPDATE` · `PUBLICATION_DATE` · `TITLE` | `LAST_UPDATE` |                                                                                                                             |
+| `sortOrder`   | `ASC` · `DESC`                               | `DESC`        |                                                                                                                             |
+| `page`        | int ≥ 1                                      | `1`           |                                                                                                                             |
+| `limit`       | int 1–100                                    | `10`          |                                                                                                                             |
 
 A filtered announcement still returns its **full** category list, not only the categories that
 matched the filter.
@@ -137,7 +131,12 @@ curl "http://localhost:3000/v1/announcements?search=water&categoryIds=1,6&page=1
       "body": "Water will be shut off on Main Street between 8:00 and 14:00",
       "publicationDate": "08/11/2026 04:38",
       "categories": [
-        { "id": 1, "code": "CITY", "labels": { "en": "City", "sk": "Mesto" }, "orderingNumber": 1 }
+        {
+          "id": 1,
+          "code": "CITY",
+          "labels": { "en": "City", "sk": "Mesto" },
+          "orderingNumber": 1
+        }
       ],
       "created": "2026-08-28T09:00:00.000Z",
       "updated": "2026-08-28T09:00:00.000Z"
@@ -178,16 +177,16 @@ checks, same order, same outcome. `test/common/publication-date-test.validation.
 every case, including a test that the regex still accepts a value produced by the format constant so
 the two cannot drift apart.
 
-| Input | Reported as |
-|---|---|
-| `` (empty) | `publicationDate should not be empty` |
-| `8/28/2026 08:55`, `2026-08-28T08:55:00Z`, `08-28-2026 08:55` | `publicationDate must use the format MM/DD/YYYY HH:mm` |
-| `13/31/2001 21:11` | `publicationDate month must be between 01 and 12` |
-| `01/32/2026 10:00` | `publicationDate day must be between 01 and 31` |
-| `02/29/2001 10:00` | `publicationDate day does not exist in that month, it has 28 days` |
-| `04/31/2026 10:00` | `publicationDate day does not exist in that month, it has 30 days` |
-| `01/15/2026 24:00` | `publicationDate hours must be between 00 and 23` |
-| `01/15/2026 10:60` | `publicationDate minutes must be between 00 and 59` |
+| Input                                                         | Reported as                                                        |
+| ------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `` (empty)                                                    | `publicationDate should not be empty`                              |
+| `8/28/2026 08:55`, `2026-08-28T08:55:00Z`, `08-28-2026 08:55` | `publicationDate must use the format MM/DD/YYYY HH:mm`             |
+| `13/31/2001 21:11`                                            | `publicationDate month must be between 01 and 12`                  |
+| `01/32/2026 10:00`                                            | `publicationDate day must be between 01 and 31`                    |
+| `02/29/2001 10:00`                                            | `publicationDate day does not exist in that month, it has 28 days` |
+| `04/31/2026 10:00`                                            | `publicationDate day does not exist in that month, it has 30 days` |
+| `01/15/2026 24:00`                                            | `publicationDate hours must be between 00 and 23`                  |
+| `01/15/2026 10:60`                                            | `publicationDate minutes must be between 00 and 59`                |
 
 When several parts are wrong the leftmost one is reported, so a value is fixed reading left to
 right. Errors come back in a single shape:
@@ -213,8 +212,12 @@ service does not know about the gateway, so the HTTP path stays independent of t
 ```js
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000/announcements', { transports: ['websocket'] });
-socket.on('announcementCreated', (announcement) => console.log(announcement.title));
+const socket = io('http://localhost:3000/announcements', {
+  transports: ['websocket'],
+});
+socket.on('announcementCreated', (announcement) =>
+  console.log(announcement.title),
+);
 ```
 
 ## Testing the API

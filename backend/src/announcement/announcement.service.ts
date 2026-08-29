@@ -93,16 +93,16 @@ export class AnnouncementService {
         updateAnnouncementDto.categoryIds,
       );
 
-    announcement.title = updateAnnouncementDto.title;
-    announcement.body = updateAnnouncementDto.body;
-    announcement.publicationDate = parsePublicationDate(
-      updateAnnouncementDto.publicationDate,
-    );
-    announcement.categories = categories;
-    announcement.updated = new Date();
-
-    const savedAnnouncement =
-      await this.announcementRepository.save(announcement);
+    const savedAnnouncement = await this.announcementRepository.save({
+      ...announcement,
+      title: updateAnnouncementDto.title,
+      body: updateAnnouncementDto.body,
+      publicationDate: parsePublicationDate(
+        updateAnnouncementDto.publicationDate,
+      ),
+      categories,
+      updated: new Date(),
+    });
 
     return mapAnnouncementEntityToDto(savedAnnouncement);
   }

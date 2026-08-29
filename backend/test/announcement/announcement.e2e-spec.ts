@@ -537,6 +537,21 @@ describe('AnnouncementController (e2e)', () => {
       ]);
     });
 
+    it('moves the last update forward on a title change', async () => {
+      const createResponse = await createAnnouncement(buildCreateDto()).expect(
+        HttpStatus.CREATED,
+      );
+
+      const response = await updateAnnouncement(
+        createResponse.body.id,
+        buildCreateDto({ title: 'Updated title' }),
+      ).expect(HttpStatus.OK);
+
+      expect(new Date(response.body.updated).getTime()).toBeGreaterThan(
+        new Date(createResponse.body.updated).getTime(),
+      );
+    });
+
     it('moves the last update forward when only the categories change', async () => {
       const cityId = categoryIdByCode(CATEGORY_CODE.CITY);
       const cultureId = categoryIdByCode(CATEGORY_CODE.CULTURE);
