@@ -445,7 +445,7 @@
     {
       "name": "Update announcement",
       "request": {
-        "method": "PATCH",
+        "method": "PUT",
         "header": [
           {
             "key": "Content-Type",
@@ -454,7 +454,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Storm warning extended to Sunday\"\n}"
+          "raw": "{\n  \"title\": \"Storm warning extended to Sunday\",\n  \"body\": \"A strong storm front is expected on Saturday evening. Secure loose objects on balconies.\",\n  \"publicationDate\": \"08/28/2026 08:55\",\n  \"categoryIds\": [{{categoryId}}]\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/v1/announcements/{{announcementId}}",
@@ -467,7 +467,7 @@
             "{{announcementId}}"
           ]
         },
-        "description": "Only the supplied fields change. categoryIds would replace the whole set. Any update moves the last-update timestamp forward."
+        "description": "Full update: every field is required and the request carries the whole new state. categoryIds replaces the whole set. Any update moves the last-update timestamp forward."
       }
     },
     {

@@ -8,6 +8,7 @@ import { useErrorSnackbar } from "src/hooks/common/useErrorSnackbar";
 import {
   AnnouncementType,
   CreateAnnouncementType,
+  UpdateAnnouncementType,
 } from "src/types/announcement";
 import { isNotFoundError } from "src/utils/api/apiError";
 
@@ -57,7 +58,7 @@ export const useAnnouncementDetail = ({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (values: CreateAnnouncementType) =>
+    mutationFn: (values: UpdateAnnouncementType) =>
       announcementApi.updateAnnouncement(announcementId, values),
     onSuccess: async (updatedAnnouncement) => {
       enqueueSnackbar(t("announcements.form.updated"), { variant: "success" });

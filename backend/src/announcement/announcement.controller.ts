@@ -6,8 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
@@ -75,10 +75,10 @@ export class AnnouncementController {
     GetAnnouncementDto,
     'Update an announcement',
     'Announcement has been updated successfully',
-    'Updates an announcement. Every field is optional and only the supplied ones change, but categoryIds replaces the whole category set rather than merging into it. Any successful update moves the last-update timestamp forward, including one that only changes the categories.',
+    'Replaces an announcement. Every field is required — the request carries the full new state, and categoryIds replaces the whole category set. Any successful update moves the last-update timestamp forward, including one that only changes the categories.',
     'Announcement',
   )
-  @Patch(':id')
+  @Put(':id')
   @HttpCode(HttpStatus.OK)
   async update(
     @Param() params: AnnouncementPathParamDto,

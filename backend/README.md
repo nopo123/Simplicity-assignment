@@ -105,7 +105,7 @@ timestamp behind.
 | `GET` | `/v1/announcements` | 200 | One page of announcements plus the total number of matches |
 | `GET` | `/v1/announcements/:id` | 200 | One announcement with its categories |
 | `POST` | `/v1/announcements` | 201 | Create, then broadcast over the websocket |
-| `PATCH` | `/v1/announcements/:id` | 200 | Partial update; `categoryIds` replaces the whole set |
+| `PUT` | `/v1/announcements/:id` | 200 | Full update; every field is required; `categoryIds` replaces the whole set |
 | `DELETE` | `/v1/announcements/:id` | 204 | Delete the announcement and its category links |
 | `GET` | `/v1/categories` | 200 | All categories, ordered for selectors |
 | `GET` | `/v1/health` | 200 | Liveness probe including a database round trip |
@@ -224,7 +224,7 @@ and lets you fire requests directly.
 
 **Postman** — import [`docs/postman/Announcements.postman_collection.json`](../docs/postman/Announcements.postman_collection.json),
 then **Run collection** or send the 17 requests top to bottom. They form one flow: create → list →
-search → filter → get → patch → delete, with the rejected requests that show each validation rule
+search → filter → get → update → delete, with the rejected requests that show each validation rule
 in between. Ids travel between requests through collection variables, so nothing has to be pasted by
 hand, and both announcements the run creates are deleted again at the end — a second run starts from
 the same data as the first.

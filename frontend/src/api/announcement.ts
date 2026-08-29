@@ -21,5 +21,5 @@ export const announcementApi = {
   updateAnnouncement: (
     id: number,
     data: UpdateAnnouncementType,
-  ): Promise<AnnouncementType> => api.patch(`/v1/announcements/${id}`, data),
+  ): Promise<AnnouncementType> => api.put(`/v1/announcements/${id}`, data),
 };

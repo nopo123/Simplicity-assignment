@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AnnouncementRepository } from './announcement.repository';
 import { AnnouncementValidationService } from './announcement.validation.service';
@@ -88,18 +88,17 @@ export class AnnouncementService {
         announcementId,
       );
 
-    const categories = updateAnnouncementDto.categoryIds
-      ? await this.announcementValidationService.validateCategories(
-          updateAnnouncementDto.categoryIds,
-        )
-      : null;
+    const categories =
+      await this.announcementValidationService.validateCategories(
+        updateAnnouncementDto.categoryIds,
+      );
 
-    announcement.title = updateAnnouncementDto.title ?? announcement.title;
-    announcement.body = updateAnnouncementDto.body ?? announcement.body;
-    announcement.publicationDate = updateAnnouncementDto.publicationDate
-      ? parsePublicationDate(updateAnnouncementDto.publicationDate)
-      : announcement.publicationDate;
-    announcement.categories = categories ?? announcement.categories;
+    announcement.title = updateAnnouncementDto.title;
+    announcement.body = updateAnnouncementDto.body;
+    announcement.publicationDate = parsePublicationDate(
+      updateAnnouncementDto.publicationDate,
+    );
+    announcement.categories = categories;
     announcement.updated = new Date();
 
     const savedAnnouncement =
@@ -109,11 +108,10 @@ export class AnnouncementService {
   }
 
   async remove(announcementId: number): Promise<void> {
-    const deleteResult =
-      await this.announcementRepository.delete(announcementId);
+    await this.announcementValidationService.validateExistingAnnouncement(
+      announcementId,
+    );
 
-    if (!deleteResult.affected) {
-      throw new NotFoundException('Announcement not found');
-    }
+    await this.announcementRepository.delete(announcementId);
   }
 }

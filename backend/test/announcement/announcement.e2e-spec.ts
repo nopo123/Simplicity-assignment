@@ -42,11 +42,23 @@ describe('AnnouncementController (e2e)', () => {
     return request(server).post('/v1/announcements').send(payload);
   };
 
-  const patchAnnouncement = (
+  const updateAnnouncement = (
     announcementId: number,
     dto: UpdateAnnouncementDto,
   ): request.Test =>
-    request(server).patch(`/v1/announcements/${announcementId}`).send(dto);
+    request(server).put(`/v1/announcements/${announcementId}`).send(dto);
+
+  const updateAnnouncementWithout = (
+    announcementId: number,
+    field: keyof UpdateAnnouncementDto,
+  ): request.Test => {
+    const payload: Record<string, unknown> = { ...buildCreateDto() };
+    delete payload[field];
+
+    return request(server)
+      .put(`/v1/announcements/${announcementId}`)
+      .send(payload);
+  };
 
   const listAnnouncements = (query = ''): request.Test =>
     request(server).get(`/v1/announcements${query}`);
@@ -459,17 +471,51 @@ describe('AnnouncementController (e2e)', () => {
     });
   });
 
-  describe('PATCH /v1/announcements/:id', () => {
-    it('updates the supplied fields and leaves the others alone', async () => {
+  describe('PUT /v1/announcements/:id', () => {
+    it('replaces the announcement with the supplied payload', async () => {
       const announcementId = await createAndExpectId(buildCreateDto());
 
-      const response = await patchAnnouncement(announcementId, {
-        title: 'Updated title',
-      } as UpdateAnnouncementDto).expect(HttpStatus.OK);
+      const response = await updateAnnouncement(
+        announcementId,
+        buildCreateDto({
+          title: 'Updated title',
+          body: 'Rewritten body',
+        }),
+      ).expect(HttpStatus.OK);
 
       expect(response.body.title).toBe('Updated title');
-      expect(response.body.body).toBe(
-        'Water will be shut off on Main Street between 8:00 and 14:00',
+      expect(response.body.body).toBe('Rewritten body');
+    });
+
+    it('rejects a missing title', async () => {
+      const announcementId = await createAndExpectId(buildCreateDto());
+
+      await updateAnnouncementWithout(announcementId, 'title').expect(
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('rejects a missing body', async () => {
+      const announcementId = await createAndExpectId(buildCreateDto());
+
+      await updateAnnouncementWithout(announcementId, 'body').expect(
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('rejects a missing publication date', async () => {
+      const announcementId = await createAndExpectId(buildCreateDto());
+
+      await updateAnnouncementWithout(announcementId, 'publicationDate').expect(
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('rejects missing categories', async () => {
+      const announcementId = await createAndExpectId(buildCreateDto());
+
+      await updateAnnouncementWithout(announcementId, 'categoryIds').expect(
+        HttpStatus.BAD_REQUEST,
       );
     });
 
@@ -481,9 +527,10 @@ describe('AnnouncementController (e2e)', () => {
         buildCreateDto({ categoryIds: [cityId, healthId] }),
       );
 
-      const response = await patchAnnouncement(announcementId, {
-        categoryIds: [cultureId],
-      } as UpdateAnnouncementDto).expect(HttpStatus.OK);
+      const response = await updateAnnouncement(
+        announcementId,
+        buildCreateDto({ categoryIds: [cultureId] }),
+      ).expect(HttpStatus.OK);
 
       expect(response.body.categories.map((category) => category.id)).toEqual([
         cultureId,
@@ -500,9 +547,10 @@ describe('AnnouncementController (e2e)', () => {
         buildCreateDto({ title: 'Newer', categoryIds: [cityId] }),
       );
 
-      const patchResponse = await patchAnnouncement(olderId, {
-        categoryIds: [cultureId],
-      } as UpdateAnnouncementDto).expect(HttpStatus.OK);
+      const updateResponse = await updateAnnouncement(
+        olderId,
+        buildCreateDto({ title: 'Older', categoryIds: [cultureId] }),
+      ).expect(HttpStatus.OK);
 
       const listResponse = await listAnnouncements().expect(HttpStatus.OK);
 
@@ -511,17 +559,20 @@ describe('AnnouncementController (e2e)', () => {
         newerId,
       ]);
       expect(
-        new Date(patchResponse.body.updated).getTime(),
-      ).toBeGreaterThanOrEqual(new Date(patchResponse.body.created).getTime());
+        new Date(updateResponse.body.updated).getTime(),
+      ).toBeGreaterThanOrEqual(new Date(updateResponse.body.created).getTime());
     });
 
     it('persists the update so a later read returns it', async () => {
       const announcementId = await createAndExpectId(buildCreateDto());
 
-      await patchAnnouncement(announcementId, {
-        body: 'Rewritten body',
-        publicationDate: '01/15/2027 10:30',
-      } as UpdateAnnouncementDto).expect(HttpStatus.OK);
+      await updateAnnouncement(
+        announcementId,
+        buildCreateDto({
+          body: 'Rewritten body',
+          publicationDate: '01/15/2027 10:30',
+        }),
+      ).expect(HttpStatus.OK);
 
       const response = await request(server)
         .get(`/v1/announcements/${announcementId}`)
@@ -534,15 +585,16 @@ describe('AnnouncementController (e2e)', () => {
     it('rejects an empty category list', async () => {
       const announcementId = await createAndExpectId(buildCreateDto());
 
-      await patchAnnouncement(announcementId, {
-        categoryIds: [],
-      } as UpdateAnnouncementDto).expect(HttpStatus.BAD_REQUEST);
+      await updateAnnouncement(
+        announcementId,
+        buildCreateDto({ categoryIds: [] }),
+      ).expect(HttpStatus.BAD_REQUEST);
     });
 
     it('returns 404 for an unknown id', async () => {
-      await patchAnnouncement(999999, {
-        title: 'Nope',
-      } as UpdateAnnouncementDto).expect(HttpStatus.NOT_FOUND);
+      await updateAnnouncement(999999, buildCreateDto()).expect(
+        HttpStatus.NOT_FOUND,
+      );
     });
   });
 

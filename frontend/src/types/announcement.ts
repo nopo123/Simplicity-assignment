@@ -44,4 +44,4 @@ export type CreateAnnouncementType = {
   readonly categoryIds: number[];
 };
 
-export type UpdateAnnouncementType = Partial<CreateAnnouncementType>;
+export type UpdateAnnouncementType = CreateAnnouncementType;
